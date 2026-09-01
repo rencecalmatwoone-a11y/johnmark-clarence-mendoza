@@ -239,9 +239,39 @@ const onScroll = () => {
 onScroll();
 window.addEventListener("scroll", onScroll, { passive: true });
 
+let navCloseTimer = null;
+
+const closeNav = () => {
+  if (!nav?.classList.contains("is-open")) return;
+  nav.classList.add("is-closing");
+  toggle?.classList.remove("is-open");
+  toggle?.setAttribute("aria-expanded", "false");
+  window.clearTimeout(navCloseTimer);
+  navCloseTimer = window.setTimeout(() => {
+    nav.classList.remove("is-open", "is-closing");
+  }, 260);
+};
+
+const openNav = () => {
+  window.clearTimeout(navCloseTimer);
+  nav?.classList.remove("is-closing");
+  nav?.classList.add("is-open");
+  toggle?.classList.add("is-open");
+  toggle?.setAttribute("aria-expanded", "true");
+};
+
 toggle?.addEventListener("click", () => {
-  const open = nav.classList.toggle("is-open");
-  toggle.setAttribute("aria-expanded", String(open));
+  if (nav?.classList.contains("is-open")) {
+    closeNav();
+  } else {
+    openNav();
+  }
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!nav?.classList.contains("is-open")) return;
+  if (header && header.contains(event.target)) return;
+  closeNav();
 });
 
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -253,8 +283,7 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     if (!target) return;
 
     event.preventDefault();
-    nav?.classList.remove("is-open");
-    toggle?.setAttribute("aria-expanded", "false");
+    closeNav();
 
     const offset = (header?.offsetHeight || 0) + 18;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
@@ -328,7 +357,7 @@ const initMouseTrail = () => {
       return "#f1b077";
     }
 
-    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "oklch(48% 0.145 148)";
+    return "#2f8f49";
   };
 
   const draw = () => {

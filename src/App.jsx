@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import portraitImage from './assets/995D7F39-8D6A-41C7-B0FD-C7028114A3CC.png'
+import { flushSync } from 'react-dom'
+import LightRays from './LightRays'
+import portraitImageLight from './assets/ChatGPT Image Sep 1, 2026, 11_08_12 PM.png'
+import portraitImageDark from './assets/ChatGPT Image Sep 1, 2026, 11_05_21 PM.png'
 import htmlIcon from './assets/html-5.png'
 import cssIcon from './assets/css-3.png'
 import jsIcon from './assets/js.png'
@@ -16,9 +19,10 @@ import packetTracerIcon from './assets/Cisco-Packet-Tracer.webp'
 const navItems = [
   { label: 'About me', href: '#about' },
   { label: 'Services', href: '#services' },
-  { label: 'Education', href: '#education' },
   { label: 'Skills', href: '#skills' },
+  { label: 'Education', href: '#education' },
   { label: 'Portfolio', href: '#work' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 const services = [
@@ -26,8 +30,8 @@ const services = [
     id: '[ PI_01 ]',
     title: 'UI/UX Design',
     description:
-      'High-contrast marketing and product surfaces with a real type hierarchy — not a pile of identical cards.',
-    tags: ['#FIGMA', '#HTML', '#CSS', '#REACT'],
+      'I design and build wireframes, interactive prototypes, and design systems built for seamless handoff—ensuring high-contrast interfaces with strong typographic hierarchy across web and mobile.',
+    tags: ['#FIGMA', 'WORDPRESS'],
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 22" fill="none" aria-hidden="true">
         <circle cx="12" cy="11" r="8.2" stroke="currentColor" strokeWidth="1.4" />
@@ -40,8 +44,8 @@ const services = [
     id: '[ FS_01 ]',
     title: 'Front-end Development',
     description:
-      'APIs, data models, and front-end that share one contract so features actually ship.',
-    tags: ['#TYPESCRIPT', '#NEXT.JS', '#NODE.JS', '#MySQL'],
+      'Dynamic user interfaces and scalable full-stack web applications wired with efficient APIs, seamless server-side rendering, and robust database management.',
+    tags: ['#REACTJS', '#TYPESCRIPT',],
     icon: (
       <svg width="18" height="22" viewBox="0 0 18 22" fill="none" aria-hidden="true">
         <rect x="3.2" y="1.2" width="11.6" height="19.6" rx="1.6" stroke="currentColor" strokeWidth="1.4" />
@@ -54,8 +58,8 @@ const services = [
     id: '[ SA_01 ]',
     title: 'Project Management',
     description:
-      'Tokens, component kits, performance, and accessibility notes a teammate can use without a walkthrough.',
-    tags: ['#MICROSOFT AZURE', '#PROJECT MANAGEMENT'],
+      'End-to-end agile delivery, cloud infrastructure alignment, and cross-functional leadership ensuring milestones ship on time, within scope, and aligned with core business goals.',
+    tags: ['#SCRUM', '#PROJECT MANAGEMENT'],
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 22" fill="none" aria-hidden="true">
         <rect x="3.2" y="1.4" width="17.6" height="5.4" rx="0.6" stroke="currentColor" strokeWidth="1.4" />
@@ -144,6 +148,18 @@ const certifications = [
     featured: false,
     badgeClass: '',
   },
+  {
+    index: '[ 04 ]',
+    type: 'IoT',
+    badge: null,
+    badgeText: 'IoT',
+    label: 'Seminar',
+    title: 'Internet of Things Seminar',
+    description: 'A seminar credential covering IoT concepts, connected systems, and emerging technology applications.',
+    href: 'https://credsverse.com/credentials/ca9e8a9a-519d-4b0c-8bdb-4e72bb8f8ca5?preview=1',
+    featured: false,
+    badgeClass: 'iot',
+  },
 ]
 
 function App() {
@@ -158,10 +174,12 @@ function App() {
   })
   const [isReady, setIsReady] = useState(false)
   const [navOpen, setNavOpen] = useState(false)
+  const [navClosing, setNavClosing] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [role, setRole] = useState('')
+  const [activeSection, setActiveSection] = useState('')
   const canvasRef = useRef(null)
 
   useEffect(() => {
@@ -176,7 +194,7 @@ function App() {
   }, [theme])
 
   useEffect(() => {
-    const interactiveSurfaces = document.querySelectorAll('.hero-cta, .header-cta, .skill-card, .profile-card, .about-copy')
+    const interactiveSurfaces = document.querySelectorAll('.hero-cta, .header-cta, .skill-card, .profile-card, .about-copy, .edu-card, .cert-item')
 
     const resetPointerState = (button) => {
       button.style.setProperty('--pointer-x', '50%')
@@ -302,6 +320,54 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (navOpen) {
+      setActiveSection(window.location.hash.replace('#', ''))
+      return undefined
+    }
+
+    const sectionIds = navItems.map((item) => item.href.slice(1))
+    const sections = sectionIds
+      .map((id) => [id, document.getElementById(id)])
+      .filter(([, el]) => el)
+
+    let ticking = false
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        ticking = false
+        const header = document.querySelector('#site-header')
+        const offset = (header?.offsetHeight || 0) + 8
+        let current = sectionIds[0] || ''
+
+        for (const [id, el] of sections) {
+          const rect = el.getBoundingClientRect()
+          if (rect.top <= offset) {
+            current = id
+          }
+        }
+
+        setActiveSection((prev) => (prev !== current ? current : prev))
+      })
+    }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [navOpen])
+
+  useEffect(() => {
+    if (!navOpen) return undefined
+    const handleClickOutside = (event) => {
+      const headerEl = document.querySelector('#site-header')
+      if (headerEl && !headerEl.contains(event.target)) closeNav()
+    }
+    document.addEventListener('pointerdown', handleClickOutside)
+    return () => document.removeEventListener('pointerdown', handleClickOutside)
+  }, [navOpen])
+
+  useEffect(() => {
     const sections = document.querySelectorAll('main .block')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
@@ -315,11 +381,12 @@ function App() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-inview')
-            observer.unobserve(entry.target)
+          } else {
+            entry.target.classList.remove('is-inview')
           }
         })
       },
-      { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
+      { threshold: 0.18, rootMargin: '0px 0px -26% 0px' }
     )
 
     sections.forEach((section) => observer.observe(section))
@@ -348,10 +415,12 @@ function App() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
-    const accent = () => {
-      const picker = document.documentElement.dataset.theme || 'light'
-      if (picker === 'dark') return '#f1b077'
-      return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || 'oklch(48% 0.145 148)'
+    const trailPalette = () => {
+      const styles = getComputedStyle(document.documentElement)
+      return {
+        primary: styles.getPropertyValue('--trail-primary').trim() || '#2f8f49',
+        glow: styles.getPropertyValue('--trail-glow').trim() || '#5ac66d',
+      }
     }
 
     const draw = (now) => {
@@ -365,30 +434,36 @@ function App() {
         return
       }
 
-      const color = accent()
+      const { primary, glow } = trailPalette()
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
+      ctx.shadowBlur = 12
+      ctx.shadowColor = glow
 
       for (let i = 1; i < points.length; i += 1) {
         const prev = points[i - 1]
         const point = points[i]
+        const midX = (prev.x + point.x) / 2
+        const midY = (prev.y + point.y) / 2
         const age = now - point.time
         const opacity = Math.max(0, 1 - age / trailDuration)
         ctx.beginPath()
         ctx.moveTo(prev.x, prev.y)
-        ctx.lineTo(point.x, point.y)
-        ctx.strokeStyle = color
+        ctx.quadraticCurveTo(prev.x, prev.y, midX, midY)
+        ctx.strokeStyle = primary
         ctx.globalAlpha = opacity * 0.62
         ctx.lineWidth = 1.5 + opacity * 6.5
         ctx.stroke()
       }
+
+      ctx.shadowBlur = 0
 
       const tip = points[points.length - 1]
       if (tip) {
         const opacity = Math.max(0, 1 - (now - tip.time) / trailDuration)
         ctx.beginPath()
         ctx.arc(tip.x, tip.y, 3.4, 0, Math.PI * 2)
-        ctx.fillStyle = color
+        ctx.fillStyle = primary
         ctx.globalAlpha = opacity * 0.85
         ctx.fill()
       }
@@ -430,15 +505,25 @@ function App() {
   }, [isReady])
 
   const handleThemeToggle = () => {
-    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+    const apply = () =>
+      flushSync(() =>
+        setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+      )
+
+    if (document.startViewTransition) {
+      document.startViewTransition(apply)
+    } else {
+      apply()
+    }
   }
 
   const handleNavClick = (event, href) => {
     event.preventDefault()
-    setNavOpen(false)
+    closeNav()
     const target = document.querySelector(href)
     if (!target) return
 
+    setActiveSection(href.slice(1))
     const header = document.querySelector('#site-header')
     const offset = (header?.offsetHeight || 0) + 18
     const top = target.getBoundingClientRect().top + window.scrollY - offset
@@ -447,6 +532,25 @@ function App() {
       history.pushState(null, '', href)
     }
   }
+
+  const closeNav = () => {
+    if (!navOpen) return
+    setNavClosing(true)
+    window.setTimeout(() => {
+      setNavOpen(false)
+      setNavClosing(false)
+    }, 260)
+  }
+
+  const toggleNav = () => {
+    if (navOpen || navClosing) {
+      closeNav()
+    } else {
+      setNavOpen(true)
+    }
+  }
+
+  const navClassName = `nav ${navOpen || navClosing ? 'is-open' : ''} ${navClosing ? 'is-closing' : ''}`
 
   const headerClassName = `site-header ${isScrolled ? 'is-scrolled' : ''} ${isHeaderHidden ? 'is-hidden' : ''}`
 
@@ -464,28 +568,34 @@ function App() {
           <a className="mark" href="#top" aria-label="JohnMark Clarence Mendoza home">
             <span>J</span>
           </a>
-          <nav className={`nav ${navOpen ? 'is-open' : ''}`} aria-label="Primary">
-            <button
-              className="nav-toggle"
-              type="button"
-              aria-expanded={navOpen}
-              aria-controls="menu"
-              aria-label={navOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              onClick={() => setNavOpen((value) => !value)}
-            >
-              <span className="nav-toggle-line" />
-              <span className="nav-toggle-line" />
-              <span className="nav-toggle-line" />
-            </button>
+          <nav className={navClassName} aria-label="Primary">
             <ul id="menu" className="menu">
               {navItems.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} onClick={(event) => handleNavClick(event, item.href)}>{item.label}</a>
+                  <a
+                    href={item.href}
+                    onClick={(event) => handleNavClick(event, item.href)}
+                    className={activeSection === item.href.slice(1) ? 'is-active' : ''}
+                  >
+                    {item.label}
+                  </a>
                 </li>
               ))}
             </ul>
           </nav>
           <div className="header-actions">
+            <button
+              className={`nav-toggle ${navOpen || navClosing ? 'is-open' : ''}`}
+              type="button"
+              aria-expanded={navOpen}
+              aria-controls="menu"
+              aria-label={navOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              onClick={toggleNav}
+            >
+              <span className="nav-toggle-line" />
+              <span className="nav-toggle-line" />
+              <span className="nav-toggle-line" />
+            </button>
             <button className="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" onClick={handleThemeToggle}>
               <svg className="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path fill="currentColor" d="M13.6 10.2A6.2 6.2 0 0 1 5.8 2.4 6.4 6.4 0 1 0 13.6 10.2Z" />
@@ -501,10 +611,11 @@ function App() {
                 />
               </svg>
             </button>
-            <a className="btn btn-outline header-cta" href="cv.pdf" download="JohnMark-Clarence-Mendoza-CV.pdf">
+            <a className="btn btn-outline header-cta" href="resume.pdf" download="JohnMark-Clarence-Mendoza-Resume.pdf">
               <span className="btn-label">Download CV</span>
               <svg className="btn-arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-                <path d="M2 7h9M7.5 3.5 11.5 7 7.5 10.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M7 2v7M4 6.5 7 9.5 10 6.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M2.5 11.5h9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
             </a>
           </div>
@@ -513,40 +624,27 @@ function App() {
 
       <main id="main">
         <section className="hero" id="top">
-          <div className="hero-field" aria-hidden="true">
-            <svg className="hero-ribbon" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <linearGradient id="ribbon" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop className="ribbon-a" offset="0%" />
-                  <stop className="ribbon-b" offset="28%" />
-                  <stop className="ribbon-c" offset="52%" />
-                  <stop className="ribbon-d" offset="100%" />
-                </linearGradient>
-                <filter id="soft" x="-15%" y="-50%" width="130%" height="200%">
-                  <feGaussianBlur stdDeviation="22" />
-                </filter>
-              </defs>
-              <path
-                filter="url(#soft)"
-                fill="none"
-                stroke="url(#ribbon)"
-                strokeWidth="78"
-                strokeLinecap="butt"
-                d="M-80 430 C 180 310, 380 510, 700 370 S 1160 210, 1520 360"
-              />
-              <path
-                filter="url(#soft)"
-                className="ribbon-echo"
-                fill="none"
-                strokeWidth="36"
-                d="M-80 470 C 240 350, 460 540, 760 410 S 1220 250, 1520 400"
-              />
-            </svg>
+          <div className="hero-rays" aria-hidden="true">
+            <LightRays
+              raysOrigin="top-center"
+              raysColor="#34a439"
+              raysSpeed={1.2}
+              lightSpread={0.9}
+              rayLength={5}
+              followMouse={true}
+              mouseInfluence={0.2}
+              noiseAmount={0}
+              distortion={0}
+              className="custom-rays"
+              pulsating={false}
+              fadeDistance={1}
+              saturation={1}
+            />
           </div>
           <div className="wrap hero-copy">
             <p className="eyebrow">Hello, I am</p>
             <h1>
-              <span>JohnMark Clarence</span>
+              <span>JohnMark Clarence Calma</span>
               <span>Mendoza</span>
             </h1>
             <h2 className="hero-role" aria-live="polite" aria-label="UI/UX Designer, Front End Developer, Project Manager">
@@ -554,7 +652,9 @@ function App() {
               <span className="typewriter-cursor" aria-hidden="true">|</span>
             </h2>
             <p className="lede">
-              A UI/UX Designer based in the Philippines, focused on building beautiful and functional web applications.
+              I&apos;m a driven Senior Bachelor of Science in Information Technology student
+              <br />
+              with a strong interest in modern web development, front-end architecture and UI/UX design.
             </p>
             <a className="btn btn-outline hero-cta" href="#work">
               <span className="btn-label">Check my work</span>
@@ -568,27 +668,54 @@ function App() {
         <section className="block reveal" id="about">
           <div className="wrap about-grid">
             <header className="block-head span-all">
+              <p className="section-kicker">Profile</p>
               <h2>About me</h2>
+              <p>Who I am as a designer and developer — the work I do, the stack I work with, and how I fit into a team.</p>
             </header>
-            <figure className="portrait profile-card">
-              <div className="profile-card-glow" aria-hidden="true" />
-              <div className="portrait-frame">
-                <img src={portraitImage} alt="Portrait" />
-                <span className="portrait-rule" />
-                <div className="profile-card-details">
-                  <strong>JohnMark Mendoza</strong>
-                  <span>UI/UX &amp; Front-end</span>
+            <div className="profile-column">
+              <figure className="portrait profile-card">
+                <div className="profile-card-glow" aria-hidden="true" />
+                <div className="portrait-frame">
+                  <img className="portrait-image portrait-image-light" src={portraitImageLight} alt="Portrait" />
+                  <img className="portrait-image portrait-image-dark" src={portraitImageDark} alt="" aria-hidden="true" />
+                  <span className="portrait-rule" />
+                  <div className="profile-card-details">
+                    <strong>JohnMark Clarence Mendoza</strong>
+                    <span>UI/UX &amp; Front-end</span>
+                  </div>
                 </div>
+                <figcaption>Cavite · Student</figcaption>
+              </figure>
+              <div className="profile-social" aria-label="Social links">
+                <a className="social-github" href="https://github.com/rencecalmatwoone-a11y" rel="noopener noreferrer" aria-label="GitHub">
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.95 0-1.1.39-1.99 1.03-2.7-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.71 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A10 10 0 0 0 12 2Z" />
+                  </svg>
+                </a>
+                <a className="social-linkedin" href="https://www.linkedin.com/in/johnmark-clarence-mendoza-9941322b5/" rel="noopener noreferrer" aria-label="LinkedIn">
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M6.5 8.4H3.6V20h2.9V8.4ZM5 3.3a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20.4 20h-2.9v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.16 1.46-2.16 2.96V20H10.6V8.4h2.78v1.58h.04c.39-.73 1.33-1.5 2.74-1.5 2.93 0 3.47 1.93 3.47 4.44V20Z" />
+                  </svg>
+                </a>
+                <a className="social-x" href="https://x.com/rencedezvous" rel="noopener noreferrer" aria-label="X">
+                  <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M18.24 3H21l-6.52 7.45L22 21h-6.17l-4.82-6.3L5.5 21H2.73l6.97-7.97L2 3h6.32l4.36 5.77L18.24 3Zm-1.08 16.2h1.51L6.93 4.7H5.3l11.86 14.5Z" />
+                  </svg>
+                </a>
+                <a className="social-mail" href="https://mail.google.com/mail/u/1/#inbox" rel="noopener noreferrer" aria-label="Email">
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.691 2.28 24 3.434 24 5.457z" />
+                  </svg>
+                </a>
               </div>
-              <figcaption>Cavite · Remote</figcaption>
-            </figure>
+            </div>
             <div className="about-copy">
               <p className="about-label">Profile / 01</p>
               <p className="about-lead">
-                I design and build web products for teams that care how the thing feels in the hand: tight grids, honest copy, and interfaces that stay quiet until they need to speak.
+                I am a Front-End Developer dedicated to crafting pixel-perfect, highly performant, and responsive web applications. With a strong foundation in modern JavaScript ecosystems—specializing in React, Next.js, and TypeScript—I bridge the gap between creative visual design and complex engineering.
               </p>
               <p>
-                Most of my work sits between engineering and design — translating a brief into components, data, and a page that still looks considered after six months of real use.
+                Building scalable web applications with React, Next.js, and TypeScript, emphasizing clean state management and performance optimization.
               </p>
               <dl className="facts">
                 <div>
@@ -597,7 +724,7 @@ function App() {
                 </div>
                 <div>
                   <dt>Stack</dt>
-                  <dd>TypeScript, React, Node, SQL</dd>
+                  <dd>TypeScript, React, Next.js, MySQL</dd>
                 </div>
                 <div>
                   <dt>Availability</dt>
@@ -611,7 +738,9 @@ function App() {
         <section className="block reveal services-block" id="services">
           <div className="wrap">
             <header className="block-head">
+              <p className="section-kicker">Services</p>
               <h2>What I can do</h2>
+              <p>Design and engineering services that span the whole lifecycle — from interface and UX to front-end build and project delivery.</p>
             </header>
             <ul className="service-cards">
               {services.map((service) => (
@@ -638,29 +767,12 @@ function App() {
           </div>
         </section>
 
-        <section className="block reveal" id="education">
-          <div className="wrap">
-            <header className="block-head">
-              <h2>Education</h2>
-            </header>
-            <ol className="timeline">
-              <li>
-                <time>NCST</time>
-                <div>
-                  <h3>Bachelor of Science in Information Technology (BSIT)</h3>
-                  <p>
-                    National College of Science and Technology (NCST), Dasmariñas, Cavite — a foundation in technology, design, and shipping real web work.
-                  </p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-
         <section className="block reveal" id="skills">
           <div className="wrap">
             <header className="block-head">
+              <p className="section-kicker">Stack</p>
               <h2>Skills &amp; technologies</h2>
+              <p>The languages, frameworks, and tools I reach for to design and ship real web work.</p>
             </header>
             <ul className="skill-board">
               {skills.map((skill) => (
@@ -675,10 +787,60 @@ function App() {
           </div>
         </section>
 
+        <section className="block reveal" id="education">
+          <div className="wrap">
+            <header className="block-head">
+              <p className="section-kicker">Education</p>
+              <h2>Education</h2>
+              <p>The academic foundation in information technology behind my design and development work.</p>
+            </header>
+            <div className="education-grid">
+              <article className="edu-card">
+                <div className="edu-card-head">
+                  <span className="edu-index">[ 01 ]</span>
+                  <span className="edu-type">Graduate</span>
+                </div>
+                <div className="edu-body">
+                  <p className="edu-label">High School · Senior High School</p>
+                  <h3>Tagaytay City Science National High School - Integrated Senior High School</h3>
+                  <p>
+                    Graduated with honors — having completed secondary education, building a strong foundation in science, mathematics, and technology that sparked an early interest in programming and digital design.
+                  </p>
+                </div>
+                <div className="edu-foot">
+                  <span className="edu-school">TCSNHS</span>
+                  <span className="edu-years">2016–2022</span>
+                  <span className="edu-location">Tagaytay · Cavite</span>
+                </div>
+              </article>
+              <article className="edu-card featured">
+                <div className="edu-card-head">
+                  <span className="edu-index">[ 02 ]</span>
+                  <span className="edu-type">Undergraduate</span>
+                </div>
+                <div className="edu-body">
+                  <p className="edu-label">Bachelor&apos;s degree</p>
+                  <h3>BS Information Technology</h3>
+                  <p>
+                    Pursuing a degree in Information Technology at NCST, Dasmariñas, Cavite — building hands-on expertise in web technologies, interface design, and modern front-end development while applying classroom concepts to real projects.
+                  </p>
+                </div>
+                <div className="edu-foot">
+                  <span className="edu-school">NCST</span>
+                  <span className="edu-years">2023–2027</span>
+                  <span className="edu-location">Dasmariñas · Cavite</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section className="block reveal" id="work">
           <div className="wrap">
             <header className="block-head">
+              <p className="section-kicker">Portfolio</p>
               <h2>Featured projects</h2>
+              <p>Selected work that shows how the pieces come together — designed and built end to end.</p>
             </header>
             <div className="projects">
               <article className="project">
@@ -702,9 +864,9 @@ function App() {
                   </div>
                 </div>
                 <div className="project-body">
-                  <h3>TuToy Hub</h3>
+                  <h3>Collecthieves (TuToy Hub)</h3>
                   <p>
-                    I designed the TuToy Hub website from the ground up, focusing on a responsive, accessible interface and a frictionless user journey designed to align with the brand&apos;s core business goals.
+                    I managed and designed some part of the Collecthieves (TuToy Hub) website UI/UX from the ground up, focusing on a responsive, accessible interface and a frictionless user journey designed to align with the brand&apos;s core business goals while managing the development process.
                   </p>
                 </div>
                 <ul className="project-stack">
@@ -733,7 +895,7 @@ function App() {
                   </div>
                   <div className="cert-body">
                     <div className={`cert-badge ${cert.badgeClass}`} aria-label="Certification badge">
-                      <img src={cert.badge} alt="Badge logo" />
+                      {cert.badge ? <img src={cert.badge} alt="Badge logo" /> : <span>{cert.badgeText}</span>}
                     </div>
                     <div className="cert-copy">
                       <p className="cert-label">{cert.label}</p>
@@ -749,13 +911,92 @@ function App() {
             </div>
           </div>
         </section>
+      <section className="block reveal" id="contact">
+          <div className="wrap">
+            <header className="block-head">
+              <p className="section-kicker">Contact</p>
+              <h2>Let&apos;s get in touch</h2>
+              <p>Open to opportunities, collaborations, and interesting projects — reach out through any of the channels below.</p>
+            </header>
+
+            <div className="contact-cards">
+              <a className="contact-item" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">
+                <span className="contact-item-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="4.5" width="20" height="15" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="m2.5 5.5 9.5 7 9.5-7" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </span>
+                <span className="contact-item-copy">
+                  <span className="contact-item-label">Email</span>
+                  <span className="contact-item-value">rencecalmatwo.one@gmail.com</span>
+                </span>
+                <span className="contact-item-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 14 14">
+                    <path d="M2 7h9M7.5 3.5 11.5 7 7.5 10.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                </span>
+              </a>
+              <a className="contact-item" href="https://github.com/rencecalmatwoone-a11y" target="_blank" rel="noopener noreferrer">
+                <span className="contact-item-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.95 0-1.1.39-1.99 1.03-2.7-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.71 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A10 10 0 0 0 12 2Z" />
+                  </svg>
+                </span>
+                <span className="contact-item-copy">
+                  <span className="contact-item-label">GitHub</span>
+                  <span className="contact-item-value">rencecalmatwoone-a11y</span>
+                </span>
+                <span className="contact-item-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 14 14">
+                    <path d="M2 7h9M7.5 3.5 11.5 7 7.5 10.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                </span>
+              </a>
+              <a className="contact-item" href="https://www.linkedin.com/in/johnmark-clarence-mendoza-9941322b5/" target="_blank" rel="noopener noreferrer">
+                <span className="contact-item-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M6.5 8.4H3.6V20h2.9V8.4ZM5 3.3a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20.4 20h-2.9v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.16 1.46-2.16 2.96V20H10.6V8.4h2.78v1.58h.04c.39-.73 1.33-1.5 2.74-1.5 2.93 0 3.47 1.93 3.47 4.44V20Z" />
+                  </svg>
+                </span>
+                <span className="contact-item-copy">
+                  <span className="contact-item-label">LinkedIn</span>
+                  <span className="contact-item-value">JohnMark Clarence Mendoza</span>
+                </span>
+                <span className="contact-item-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 14 14">
+                    <path d="M2 7h9M7.5 3.5 11.5 7 7.5 10.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                </span>
+              </a>
+              <a className="contact-item" href="https://x.com/rencedezvous" target="_blank" rel="noopener noreferrer">
+                <span className="contact-item-icon" aria-hidden="true">
+                  <svg width="19" height="19" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M18.24 3H21l-6.52 7.45L22 21h-6.17l-4.82-6.3L5.5 21H2.73l6.97-7.97L2 3h6.32l4.36 5.77L18.24 3Zm-1.08 16.2h1.51L6.93 4.7H5.3l11.86 14.5Z" />
+                  </svg>
+                </span>
+                <span className="contact-item-copy">
+                  <span className="contact-item-label">X</span>
+                  <span className="contact-item-value">@rencedezvous</span>
+                </span>
+                <span className="contact-item-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 14 14">
+                    <path d="M2 7h9M7.5 3.5 11.5 7 7.5 10.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
+
+      <div className="scroll-reveal-veil" aria-hidden="true" />
 
       <footer className="site-footer">
         <div className="wrap footer-shell">
           <div className="footer-brand">
             <a className="mark" href="#top" aria-label="Home"><span>J</span></a>
-            <p>JohnMark Clarence Mendoza — UI/UX Designer</p>
+            <p>JohnMark Clarence Mendoza — UI/UX Designer &amp; Front-End Developer</p>
           </div>
 
           <nav className="footer-nav" aria-label="Footer">
@@ -769,23 +1010,30 @@ function App() {
           <div className="footer-meta">
             <ul className="social" aria-label="Social links">
               <li>
-                <a href="https://github.com/" rel="noopener noreferrer" aria-label="GitHub">
+                <a href="https://github.com/rencecalmatwoone-a11y" rel="noopener noreferrer" aria-label="GitHub">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.95 0-1.1.39-1.99 1.03-2.7-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.71 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A10 10 0 0 0 12 2Z" />
                   </svg>
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/" rel="noopener noreferrer" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/in/johnmark-clarence-mendoza-9941322b5/" rel="noopener noreferrer" aria-label="LinkedIn">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill="currentColor" d="M6.5 8.4H3.6V20h2.9V8.4ZM5 3.3a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM20.4 20h-2.9v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.16 1.46-2.16 2.96V20H10.6V8.4h2.78v1.58h.04c.39-.73 1.33-1.5 2.74-1.5 2.93 0 3.47 1.93 3.47 4.44V20Z" />
                   </svg>
                 </a>
               </li>
               <li>
-                <a href="https://x.com/" rel="noopener noreferrer" aria-label="X">
+                <a href="https://x.com/rencedezvous" rel="noopener noreferrer" aria-label="X">
                   <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill="currentColor" d="M18.24 3H21l-6.52 7.45L22 21h-6.17l-4.82-6.3L5.5 21H2.73l6.97-7.97L2 3h6.32l4.36 5.77L18.24 3Zm-1.08 16.2h1.51L6.93 4.7H5.3l11.86 14.5Z" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="https://mail.google.com/mail/u/1/#inbox" rel="noopener noreferrer" aria-label="Email">
+                  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.691 2.28 24 3.434 24 5.457z" />
                   </svg>
                 </a>
               </li>
