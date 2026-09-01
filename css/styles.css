@@ -199,9 +199,18 @@ html[data-theme="dark"] {
   --ribbon-mid: oklch(78% 0.11 148 / 0.45);
   --ribbon-soft: oklch(82% 0.09 148 / 0.22);
   --ribbon-echo: oklch(70% 0.12 148 / 0.18);
-  --toggle-bg: var(--raised);
+--toggle-bg: var(--raised);
 --trail-primary: #f1b077;
   --trail-glow: #ff9c4a;
+}
+
+@media (min-width: 64em) {
+  :root,
+  html[data-theme="light"],
+  html[data-theme="dark"] {
+    font-size: 13.5px;
+    --wrap: 1100px;
+  }
 }
 
 *,
