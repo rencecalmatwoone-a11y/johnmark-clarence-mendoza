@@ -1945,14 +1945,14 @@ html[data-theme="dark"] .portrait-image-light {
 
 .projects {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
   padding-bottom: 0.75rem;
   align-items: stretch;
 }
 
 .projects > .project:only-child {
-  grid-column: 2;
+  grid-column: 1 / -1;
   max-width: 38rem;
   width: 100%;
   justify-self: center;
@@ -2096,6 +2096,10 @@ html[data-theme="dark"] .project {
   object-fit: cover;
   transform: scale(1);
   transition: transform 0.55s var(--ease), filter 0.45s var(--ease);
+}
+
+.project-shot .project-image-contain {
+  object-fit: contain;
 }
 
 .project-preview-link {

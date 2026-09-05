@@ -14,6 +14,7 @@ import ibmBadge from './assets/ibm_PNG19658.png'
 import microsoftBadge from './assets/microsoft-logo-microsoft-icon-transparent-free-png.webp'
 import packtBadge from './assets/Packt-Logo.png'
 import projectShot from './assets/Screenshot 2026-08-31 181008.png'
+import musyncShot from './assets/musync.png'
 import packetTracerIcon from './assets/Cisco-Packet-Tracer.webp'
 
 const navItems = [
@@ -871,7 +872,41 @@ function App() {
                 </div>
                 <ul className="project-stack">
                   <li>Figma</li>
+                  <li>Wireframing</li>
+                </ul>
+              </article>
+              <article className="project">
+                <span className="project-corner project-corner-tl" aria-hidden="true" />
+                <span className="project-corner project-corner-tr" aria-hidden="true" />
+                <span className="project-corner project-corner-bl" aria-hidden="true" />
+                <span className="project-corner project-corner-br" aria-hidden="true" />
+                <div className="project-preview">
+                  <div className="project-shot">
+                    <img className="project-image-contain" src={musyncShot} alt="Musync song guessing game with music filters, playback controls, and score tracking" loading="lazy" />
+                    <a
+                      className="project-preview-link"
+                      href="https://musyncsongguessinggame.vercel.app/"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label="Open live preview for Musync"
+                    >
+                      Live preview
+                    </a>
+                    <span className="project-scan" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="project-body">
+                  <h3>Musync</h3>
+                  <p>
+                    A song guessing game built with React and Node.js, using Supabase for data and authentication. Integrates Spotify login and playback, with hosting on Vercel. Multiplayer via Supabase Realtime (currently unavailable).
+                  </p>
+                </div>
+                <ul className="project-stack">
                   <li>React</li>
+                  <li>Node.js</li>
+                  <li>Supabase</li>
+                  <li>Spotify API</li>
+                  <li>Vercel</li>
                 </ul>
               </article>
             </div>
