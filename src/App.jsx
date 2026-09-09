@@ -15,7 +15,10 @@ import microsoftBadge from './assets/microsoft-logo-microsoft-icon-transparent-f
 import packtBadge from './assets/Packt-Logo.png'
 import projectShot from './assets/Screenshot 2026-08-31 181008.png'
 import musyncShot from './assets/musync.png'
-import packetTracerIcon from './assets/Cisco-Packet-Tracer.webp'
+import nodejsIcon from './assets/nodejs.svg'
+import gitIcon from './assets/git.svg'
+import vscodeIcon from './assets/vscode.svg'
+import stitchIcon from './assets/google-stitch.png'
 
 const navItems = [
   { label: 'About me', href: '#about' },
@@ -28,7 +31,7 @@ const navItems = [
 
 const services = [
   {
-    id: '[ PI_01 ]',
+    id: '[ SRV_01 ]',
     title: 'UI/UX Design',
     description:
       'I design and build wireframes, interactive prototypes, and design systems built for seamless handoff—ensuring high-contrast interfaces with strong typographic hierarchy across web and mobile.',
@@ -42,7 +45,7 @@ const services = [
     ),
   },
   {
-    id: '[ FS_01 ]',
+    id: '[ SRV_02 ]',
     title: 'Front-end Development',
     description:
       'Dynamic user interfaces and scalable full-stack web applications wired with efficient APIs, seamless server-side rendering, and robust database management.',
@@ -56,7 +59,7 @@ const services = [
     ),
   },
   {
-    id: '[ SA_01 ]',
+    id: '[ SRV_03 ]',
     title: 'Project Management',
     description:
       'End-to-end agile delivery, cloud infrastructure alignment, and cross-functional leadership ensuring milestones ship on time, within scope, and aligned with core business goals.',
@@ -111,8 +114,32 @@ const skills = [
     </svg>
   ) },
   { name: 'WordPress', logo: wordpressIcon },
-  { name: 'Packet Tracer', logo: packetTracerIcon },
+  { name: 'Node.js', logo: nodejsIcon },
   { name: 'MySQL', logo: mysqlIcon },
+  { name: 'Cursor', logo: null, svg: (
+    <svg viewBox="0 0 24 24" fill="currentColor" fillRule="evenodd" aria-hidden="true">
+      <path d="M22.106 5.68L12.5.135a.998.998 0 00-.998 0L1.893 5.68a.84.84 0 00-.419.726v11.186c0 .3.16.577.42.727l9.607 5.547a.999.999 0 00.998 0l9.608-5.547a.84.84 0 00.42-.727V6.407a.84.84 0 00-.42-.726zm-.603 1.176L12.228 22.92c-.063.108-.228.064-.228-.061V12.34a.59.59 0 00-.295-.51l-9.11-5.26c-.107-.062-.063-.228.062-.228h18.55c.264 0 .428.286.296.514z" />
+    </svg>
+  ) },
+  { name: 'VS Code', logo: vscodeIcon },
+  { name: 'Google Stitch', logo: stitchIcon },
+  { name: 'Supabase', logo: null, svg: (
+    <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
+      <path d="M18 2 3 20h13V2Z" fill="#3ECF8E" />
+      <path d="M16 12h13L14 30V12Z" fill="#34B27B" />
+    </svg>
+  ) },
+  { name: 'Vercel', logo: null, svg: (
+    <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
+      <path d="M16 3 31 29H1Z" fill="currentColor" />
+    </svg>
+  ) },
+  { name: 'Git', logo: gitIcon },
+  { name: 'GitHub', logo: null, svg: (
+    <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+      <path fill="currentColor" d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.237 1.838 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.303-5.467-1.333-5.467-5.93 0-1.31.468-2.382 1.235-3.222-.123-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.654 1.652.242 2.873.12 3.176.768.84 1.233 1.912 1.233 3.222 0 4.61-2.807 5.624-5.48 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.902-.015 3.296 0 .322.216.696.825.578C20.565 22.297 24 17.8 24 12.5c0-6.63-5.373-12-12-12Z" />
+    </svg>
+  ) },
 ]
 
 const certifications = [
@@ -898,7 +925,7 @@ function App() {
                 <div className="project-body">
                   <h3>Musync</h3>
                   <p>
-                    A song guessing game built with React and Node.js, using Supabase for data and authentication. Integrates Spotify login and playback, with hosting on Vercel. Multiplayer via Supabase Realtime (currently unavailable).
+                    A song guessing game built with React and Node.js, using Supabase for data and authentication. Integrates Spotify login and playback and Deezer as a fallback, with hosting on Vercel. Multiplayer via Supabase Realtime.
                   </p>
                 </div>
                 <ul className="project-stack">
@@ -906,6 +933,7 @@ function App() {
                   <li>Node.js</li>
                   <li>Supabase</li>
                   <li>Spotify API</li>
+                  <li>Deezer API</li>
                   <li>Vercel</li>
                 </ul>
               </article>
