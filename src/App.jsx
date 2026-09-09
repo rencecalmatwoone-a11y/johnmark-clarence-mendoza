@@ -212,6 +212,8 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
+    const favicon = document.querySelector('link[rel="icon"]')
+    favicon?.setAttribute('href', theme === 'dark' ? portraitImageDark : portraitImageLight)
     try {
       localStorage.setItem('theme', theme)
     } catch {
