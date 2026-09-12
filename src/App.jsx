@@ -985,7 +985,7 @@ function App() {
             </header>
 
             <div className="contact-cards">
-              <a className="contact-item" href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">
+              <a className="contact-item" href="https://mail.google.com/mail/?view=cm&fs=1&to=rencecalmatwo.one%40gmail.com" target="_blank" rel="noopener noreferrer">
                 <span className="contact-item-icon" aria-hidden="true">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <rect x="2" y="4.5" width="20" height="15" rx="2" stroke="currentColor" strokeWidth="1.5" />
