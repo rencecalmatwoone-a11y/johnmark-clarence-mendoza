@@ -157,6 +157,32 @@ const skills = [
   ) },
 ]
 
+function HeroStack({ category }) {
+  const stack = category === 'Management'
+    ? [{ name: 'Microsoft 365', logo: microsoftBadge }, { name: 'Google Workspace', logo: googleLogo }]
+    : (category === 'Frontend'
+      ? ['ReactJS', 'TypeScript', 'Tailwind']
+      : skillFilters.find((filter) => filter.label === category).names
+    ).map((name) => skills.find((skill) => skill.name === name))
+
+  if (category === 'Design') {
+    stack.push(skills.find((skill) => skill.name === 'WordPress'))
+  }
+
+  return (
+    <span className="hero-stack">
+      {stack.map((skill) => (
+        <span className="hero-stack-item" key={skill.name} tabIndex={0} role="img" aria-label={skill.name}>
+          <span className="hero-stack-logo" aria-hidden="true">
+            {skill.logo ? <img src={skill.logo} alt="" /> : skill.svg}
+          </span>
+          <span className="hero-stack-tooltip" aria-hidden="true">{skill.name}</span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
 const certifications = [
   {
     index: '[ 01 ]',
@@ -748,9 +774,8 @@ function App() {
               <span className="typewriter-cursor" aria-hidden="true">|</span>
             </h2>
             <p className="lede">
-              I&apos;m a driven Senior Bachelor of Science in Information Technology student
-              <br />
-              with a strong interest in modern web development, front-end architecture and UI/UX design.
+              I&apos;m a UI/UX Designer <HeroStack category="Design" />, Front-End Developer <HeroStack category="Frontend" />, and Project Manager <HeroStack category="Management" />{' '}
+              focused on creating intuitive digital experiences and turning ideas into polished, functional products.
             </p>
             <a className="btn btn-outline hero-cta" href="#work">
               <span className="btn-label">Check my work</span>
