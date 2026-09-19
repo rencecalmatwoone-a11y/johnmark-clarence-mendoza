@@ -868,6 +868,7 @@ html[data-theme="dark"] .hero-rays {
   align-items: baseline;
   justify-content: center;
   gap: 0.12em;
+  animation: roleCrossfade var(--role-cycle) linear both;
 }
 
 .hero-role-content {
@@ -885,7 +886,7 @@ html[data-theme="dark"] .hero-rays {
   inset: 0 auto 0 0;
   overflow: hidden;
   width: 0;
-  animation: roleTyping var(--role-cycle) steps(var(--role-characters), end) both;
+  animation: roleTyping var(--role-cycle) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .hero-role-typing::after {
@@ -930,6 +931,12 @@ html[data-theme="dark"] .hero-rays {
   94%, 100% { width: 0; }
 }
 
+@keyframes roleCrossfade {
+  0% { opacity: 0; }
+  8%, 94% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 @keyframes roleSelectionReveal {
   0% { right: calc(100% + 0.55em); opacity: 0; }
   8% { right: calc(100% + 0.55em); opacity: 1; }
@@ -960,6 +967,7 @@ html[data-theme="dark"] .hero-rays {
 .hero-role-handle:nth-child(4) { bottom: -3px; right: -3px; }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-role,
   .hero-role-typing,
   .hero-role-typing::after,
   .hero-role-selection,
