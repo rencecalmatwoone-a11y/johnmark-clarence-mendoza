@@ -13,6 +13,12 @@ import mysqlIcon from './assets/mysql.png'
 import ibmBadge from './assets/ibm_PNG19658.png'
 import microsoftBadge from './assets/microsoft-logo-microsoft-icon-transparent-free-png.webp'
 import packtBadge from './assets/Packt-Logo.png'
+import aiFundamentalsBadge from './assets/ai-fundamentals-badge.png'
+import itCustomerSupportBadge from './assets/it-customer-support-badge.png'
+import ncstLogo from './assets/ncst-logo.png'
+import databricksLogo from './assets/databricks-logo.svg'
+import hackerrankLogo from './assets/hackerrank-logo.svg'
+import googleLogo from './assets/google-logo.svg'
 import projectShot from './assets/Screenshot 2026-08-31 181008.png'
 import musyncShot from './assets/musync.png'
 import nodejsIcon from './assets/nodejs.svg'
@@ -73,6 +79,15 @@ const services = [
       </svg>
     ),
   },
+]
+
+const skillFilters = [
+  { label: 'All', names: null },
+  { label: 'Frontend', names: ['HTML', 'CSS', 'JavaScript', 'Tailwind', 'Bootstrap', 'ReactJS', 'TypeScript'] },
+  { label: 'Backend', names: ['PHP', 'JavaScript', 'TypeScript', 'Node.js', 'Supabase'] },
+  { label: 'Design', names: ['Figma', 'Google Stitch'] },
+  { label: 'Databases', names: ['MySQL', 'Supabase'] },
+  { label: 'Tools & platforms', names: ['WordPress', 'Cursor', 'VS Code', 'Vercel', 'Git', 'GitHub'] },
 ]
 
 const skills = [
@@ -147,6 +162,7 @@ const certifications = [
     index: '[ 01 ]',
     type: 'Front-end',
     badge: ibmBadge,
+    organization: 'IBM',
     label: 'Professional certificate',
     title: 'Front-End Developer',
     description: 'Focused on building responsive interfaces, polished user experiences, and maintainable front-end architecture.',
@@ -158,6 +174,7 @@ const certifications = [
     index: '[ 02 ]',
     type: 'Project Mgmt',
     badge: microsoftBadge,
+    organization: 'Microsoft',
     label: 'Course',
     title: 'Project Management Fundamentals',
     description: 'Core principles of planning, execution, communication, and successful digital project delivery.',
@@ -169,6 +186,7 @@ const certifications = [
     index: '[ 03 ]',
     type: 'Security',
     badge: packtBadge,
+    organization: 'Packt',
     label: 'Specialization',
     title: 'CompTIA Security+ (SY0-701) Specialization',
     description: 'Focused on cybersecurity fundamentals, operational security, and resilient system practices.',
@@ -179,18 +197,66 @@ const certifications = [
   {
     index: '[ 04 ]',
     type: 'IoT',
-    badge: null,
-    badgeText: 'IoT',
+    badge: ncstLogo,
+    organization: 'NCST',
     label: 'Seminar',
     title: 'Internet of Things Seminar',
     description: 'A seminar credential covering IoT concepts, connected systems, and emerging technology applications.',
     href: 'https://credsverse.com/credentials/ca9e8a9a-519d-4b0c-8bdb-4e72bb8f8ca5?preview=1',
     featured: false,
-    badgeClass: 'iot',
+    badgeClass: 'organization',
+  },
+  {
+    index: '[ 05 ]', type: 'AI', badge: aiFundamentalsBadge, organization: 'IBM SkillsBuild', badgeClass: 'credential',
+    label: 'Credential', title: 'AI Fundamentals',
+    description: 'Foundational concepts in artificial intelligence and its practical applications.',
+    href: 'https://www.credly.com/badges/996e6d25-1f0c-4114-8bd4-28d3938bac6d',
+  },
+  {
+    index: '[ 06 ]', type: 'Generative AI', badge: databricksLogo, organization: 'Databricks', badgeClass: 'organization',
+    label: 'Databricks', title: 'Generative AI Fundamentals',
+    description: 'An introduction to generative AI concepts and applications.',
+    href: 'https://customer-academy.databricks.com/lms/index.php?r=myActivities/downloadCertificate&course_id=1765&id_user=1659338',
+  },
+  {
+    index: '[ 07 ]', type: 'IT Support', badge: itCustomerSupportBadge, organization: 'Cisco', badgeClass: 'credential',
+    label: 'Credential', title: 'IT Customer Support Basics',
+    description: 'Foundational skills for assisting customers and resolving everyday IT issues.',
+    href: 'https://www.credly.com/badges/87c9454f-697e-4e19-a5d0-7d0fb5b3c401/public_url',
+  },
+  {
+    index: '[ 08 ]', type: 'Database', badge: hackerrankLogo, organization: 'HackerRank', badgeClass: 'organization',
+    label: 'HackerRank', title: 'SQL (Advanced)',
+    description: 'Advanced SQL skills for querying and working with relational data.',
+    href: 'https://www.hackerrank.com/certificates/c1aff7f5b805',
+  },
+  {
+    index: '[ 09 ]', type: 'IT Support', badge: googleLogo, organization: 'Google', badgeClass: 'organization',
+    label: 'Course', title: 'Technical Support Fundamentals',
+    description: 'Core technical support concepts, troubleshooting, and IT fundamentals.',
+    href: 'https://www.coursera.org/account/accomplishments/verify/38CLSQF1TA7H?utm_source=ios&utm_medium=certificate&utm_content=cert_image&utm_campaign=sharing_cta&utm_product=course',
   },
 ]
 
+function CertificationBadge({ cert }) {
+  const [imageFailed, setImageFailed] = useState(false)
+  const showImage = cert.badge && !imageFailed
+
+  return (
+    <div className={`cert-badge ${showImage ? cert.badgeClass : 'text'}`}>
+      {showImage ? (
+        <img src={cert.badge} alt={`${cert.organization} ${cert.badgeClass === 'credential' ? `${cert.title} badge` : 'logo'}`} onError={() => setImageFailed(true)} />
+      ) : <span>{cert.organization}</span>}
+    </div>
+  )
+}
+
 function App() {
+  const [activeSkillFilter, setActiveSkillFilter] = useState('All')
+  const selectedSkillFilter = skillFilters.find((filter) => filter.label === activeSkillFilter)
+  const visibleSkills = skills.filter((skill) => !selectedSkillFilter.names || selectedSkillFilter.names.includes(skill.name))
+  const [activeCert, setActiveCert] = useState(0)
+  const moveCert = (direction) => setActiveCert((current) => (current + direction + certifications.length) % certifications.length)
   const [theme, setTheme] = useState(() => {
     try {
       const stored = window.localStorage.getItem('theme')
@@ -804,9 +870,29 @@ function App() {
               <h2>Skills &amp; technologies</h2>
               <p>The languages, frameworks, and tools I reach for to design and ship real web work.</p>
             </header>
-            <ul className="skill-board">
+            <div className="skill-filter-bar">
+              <div className="skill-filters" role="group" aria-label="Filter technologies">
+                {skillFilters.map((filter) => (
+                  <button
+                    key={filter.label}
+                    className="skill-filter"
+                    type="button"
+                    aria-pressed={activeSkillFilter === filter.label}
+                    aria-controls="skill-results"
+                    onClick={() => setActiveSkillFilter(filter.label)}
+                  >
+                    {filter.label}
+                    <span aria-hidden="true">{filter.names ? skills.filter((skill) => filter.names.includes(skill.name)).length : skills.length}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="skill-filter-status" role="status" aria-live="polite" aria-atomic="true">
+                {activeSkillFilter} · {visibleSkills.length} technologies
+              </p>
+            </div>
+            <ul className="skill-board" id="skill-results" aria-label={`${activeSkillFilter} technologies`}>
               {skills.map((skill) => (
-                <li className="skill-card" key={skill.name} tabIndex={0}>
+                <li className="skill-card" key={skill.name} tabIndex={0} hidden={!visibleSkills.includes(skill)}>
                   <span className="skill-logo" aria-hidden="true">
                     {skill.logo ? <img src={skill.logo} alt="" /> : skill.svg}
                   </span>
@@ -951,17 +1037,24 @@ function App() {
               <p>Professional credentials that reinforce my approach to product design, systems thinking, and delivery.</p>
             </header>
 
-            <div className="cert-grid">
-              {certifications.map((cert) => (
+            <div className="cert-carousel" role="region" aria-roledescription="carousel" aria-label="Certifications">
+            <div className="cert-stack">
+              {certifications.map((cert, index) => {
+                const offset = (index - activeCert + certifications.length) % certifications.length
+                const position = offset === 0 ? 'active' : offset === 1 ? 'next' : offset === certifications.length - 1 ? 'previous' : 'hidden'
+                return (
+                <div className={`cert-slide cert-slide--${position}`} key={cert.title} aria-hidden={position === 'hidden'} inert={position === 'hidden' ? true : undefined}>
+                {position !== 'active' && position !== 'hidden' && (
+                  <button className="cert-select" type="button" aria-label={`Show ${cert.title}`} onClick={() => setActiveCert(index)} />
+                )}
+                <div className="cert-slide-content" inert={position !== 'active' ? true : undefined}>
                 <article className={`cert-item ${cert.featured ? 'featured' : ''}`} key={cert.title}>
                   <div className="cert-header">
                     <span className="cert-index">{cert.index}</span>
                     <span className="cert-type">{cert.type}</span>
                   </div>
                   <div className="cert-body">
-                    <div className={`cert-badge ${cert.badgeClass}`} aria-label="Certification badge">
-                      {cert.badge ? <img src={cert.badge} alt="Badge logo" /> : <span>{cert.badgeText}</span>}
-                    </div>
+                    <CertificationBadge cert={cert} />
                     <div className="cert-copy">
                       <p className="cert-label">{cert.label}</p>
                       <h3>{cert.title}</h3>
@@ -972,7 +1065,16 @@ function App() {
                     </div>
                   </div>
                 </article>
-              ))}
+                </div>
+                </div>
+                )
+              })}
+            </div>
+            <div className="cert-controls">
+              <button type="button" onClick={() => moveCert(-1)} aria-label="Previous certification">←</button>
+              <p aria-live="polite" aria-atomic="true"><span className="cert-count">{activeCert + 1} / {certifications.length}</span><span className="cert-current-title">{certifications[activeCert].title}</span></p>
+              <button type="button" onClick={() => moveCert(1)} aria-label="Next certification">→</button>
+            </div>
             </div>
           </div>
         </section>
