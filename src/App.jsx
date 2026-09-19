@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
+import HeroRole from './HeroRole'
 import VisitorActivity from './VisitorActivity'
 import portraitImageLight from './assets/ChatGPT Image Sep 1, 2026, 11_08_12 PM.png'
 import portraitImageDark from './assets/ChatGPT Image Sep 1, 2026, 11_05_21 PM.png'
@@ -288,7 +289,6 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
-  const [role, setRole] = useState('')
   const [activeSection, setActiveSection] = useState('')
   const canvasRef = useRef(null)
 
@@ -363,49 +363,6 @@ function App() {
     }, reduceMotion.matches ? 0 : 900)
 
     return () => window.clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const roles = ['UI/UX Designer', 'Front End Developer', 'Project Manager']
-    let currentIndex = 0
-    let charIndex = 0
-    let deleting = false
-
-    const tick = () => {
-      const currentRole = roles[currentIndex] || ''
-
-      if (!deleting && charIndex <= currentRole.length) {
-        setRole(currentRole.slice(0, charIndex))
-        charIndex += 1
-
-        if (charIndex > currentRole.length) {
-          deleting = true
-          window.setTimeout(tick, 1200)
-          return
-        }
-
-        window.setTimeout(tick, 150)
-        return
-      }
-
-      if (deleting) {
-        setRole(currentRole.slice(0, charIndex))
-        charIndex -= 1
-
-        if (charIndex < 0) {
-          deleting = false
-          currentIndex = (currentIndex + 1) % roles.length
-          charIndex = 0
-          window.setTimeout(tick, 250)
-          return
-        }
-
-        window.setTimeout(tick, 100)
-      }
-    }
-
-    const started = window.setTimeout(tick, 350)
-    return () => window.clearTimeout(started)
   }, [])
 
   useEffect(() => {
@@ -759,10 +716,7 @@ function App() {
               <span>JohnMark Clarence Calma</span>
               <span>Mendoza</span>
             </h1>
-            <h2 className="hero-role" aria-live="polite" aria-label="UI/UX Designer, Front End Developer, Project Manager">
-              <span className="typewriter-text">{role}</span>
-              <span className="typewriter-cursor" aria-hidden="true">|</span>
-            </h2>
+            <HeroRole />
             <p className="lede">
               I&apos;m a UI/UX Designer <HeroStack category="Design" />, Front-End Developer <HeroStack category="Frontend" />, and Project Manager <HeroStack category="Management" />{' '}
               focused on creating intuitive digital experiences and turning ideas into polished, functional products.

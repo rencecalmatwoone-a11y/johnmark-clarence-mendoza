@@ -853,6 +853,8 @@ html[data-theme="dark"] .hero-rays {
 }
 
 .hero-role {
+  position: relative;
+  isolation: isolate;
   margin: clamp(1.25rem, 2.5vw, 2rem) 0 0;
   font-family: var(--mono);
   font-size: clamp(1rem, 2vw, 1.5rem);
@@ -866,6 +868,114 @@ html[data-theme="dark"] .hero-rays {
   align-items: baseline;
   justify-content: center;
   gap: 0.12em;
+}
+
+.hero-role-content {
+  position: relative;
+  display: inline-block;
+}
+
+.hero-role-measure {
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.hero-role-typing {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  width: 0;
+  animation: roleTyping var(--role-cycle) steps(var(--role-characters), end) both;
+}
+
+.hero-role-typing::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0.25em;
+  height: 1.05em;
+  border-right: 1px solid var(--accent);
+  animation: typewriterBlink 0.9s steps(1) infinite;
+}
+
+.hero-role-selection {
+  position: absolute;
+  z-index: -1;
+  inset: -0.35em -0.55em;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  pointer-events: none;
+  animation: roleSelectionReveal var(--role-cycle) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.hero-role-pointer-track {
+  position: absolute;
+  inset: 0 -0.55em;
+  pointer-events: none;
+  animation: rolePointerReveal var(--role-cycle) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.hero-role-pointer {
+  position: absolute;
+  top: calc(100% + 0.18em);
+  left: -4px;
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 20%));
+}
+
+@keyframes roleTyping {
+  0%, 8% { width: 0; }
+  38%, 72% { width: 100%; }
+  94%, 100% { width: 0; }
+}
+
+@keyframes roleSelectionReveal {
+  0% { right: calc(100% + 0.55em); opacity: 0; }
+  8% { right: calc(100% + 0.55em); opacity: 1; }
+  38%, 72% { right: -0.55em; opacity: 1; }
+  94% { right: calc(100% + 0.55em); opacity: 1; }
+  100% { right: calc(100% + 0.55em); opacity: 0; }
+}
+
+@keyframes rolePointerReveal {
+  0% { transform: translate(0, 6px); opacity: 0; }
+  8% { transform: translate(0, 0); opacity: 1; }
+  38%, 72% { transform: translate(100%, 0); opacity: 1; }
+  94% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(0, 6px); opacity: 0; }
+}
+
+.hero-role-handle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--accent);
+  background: var(--bg);
+}
+
+.hero-role-handle:nth-child(1) { top: -3px; left: -3px; }
+.hero-role-handle:nth-child(2) { top: -3px; right: -3px; }
+.hero-role-handle:nth-child(3) { bottom: -3px; left: -3px; }
+.hero-role-handle:nth-child(4) { bottom: -3px; right: -3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-role-typing,
+  .hero-role-typing::after,
+  .hero-role-selection,
+  .hero-role-pointer-track {
+    animation: none;
+  }
+
+  .hero-role-typing {
+    width: 100%;
+  }
+
+  .hero-role-typing::after,
+  .hero-role-selection,
+  .hero-role-pointer-track {
+    display: none;
+  }
 }
 
 .typewriter-text {
