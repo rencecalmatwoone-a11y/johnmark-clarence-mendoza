@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
+import VisitorActivity from './VisitorActivity'
 import portraitImageLight from './assets/ChatGPT Image Sep 1, 2026, 11_08_12 PM.png'
 import portraitImageDark from './assets/ChatGPT Image Sep 1, 2026, 11_05_21 PM.png'
 import htmlIcon from './assets/html-5.png'
@@ -25,6 +26,8 @@ import nodejsIcon from './assets/nodejs.svg'
 import gitIcon from './assets/git.svg'
 import vscodeIcon from './assets/vscode.svg'
 import stitchIcon from './assets/google-stitch.png'
+import figmaIcon from './assets/figma.svg'
+import supabaseIcon from './assets/supabase.svg'
 
 const navItems = [
   { label: 'About me', href: '#about' },
@@ -119,15 +122,7 @@ const skills = [
     </svg>
   ) },
   { name: 'TypeScript', logo: typescriptIcon },
-  { name: 'Figma', logo: null, svg: (
-    <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
-      <path fill="#F24E1E" d="M8.4 4.4h7.6a3.8 3.8 0 0 1 0 7.6H8.4z" />
-      <path fill="#FF7262" d="M16 4.4h7.6a3.8 3.8 0 1 1 0 7.6H16z" />
-      <path fill="#A259FF" d="M8.4 12.2h7.6v7.6a3.8 3.8 0 0 1-7.6 0z" />
-      <circle cx="19.8" cy="16" r="3.8" fill="#1ABCFE" />
-      <path fill="#0ACF83" d="M8.4 19.8h7.6v7.6a3.8 3.8 0 1 1-7.6 0z" />
-    </svg>
-  ) },
+  { name: 'Figma', logo: figmaIcon },
   { name: 'WordPress', logo: wordpressIcon },
   { name: 'Node.js', logo: nodejsIcon },
   { name: 'MySQL', logo: mysqlIcon },
@@ -138,12 +133,7 @@ const skills = [
   ) },
   { name: 'VS Code', logo: vscodeIcon },
   { name: 'Google Stitch', logo: stitchIcon },
-  { name: 'Supabase', logo: null, svg: (
-    <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
-      <path d="M18 2 3 20h13V2Z" fill="#3ECF8E" />
-      <path d="M16 12h13L14 30V12Z" fill="#34B27B" />
-    </svg>
-  ) },
+  { name: 'Supabase', logo: supabaseIcon },
   { name: 'Vercel', logo: null, svg: (
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
       <path d="M16 3 31 29H1Z" fill="currentColor" />
@@ -1234,6 +1224,7 @@ function App() {
         </div>
 
         <div className="wrap footer-bar">
+          <VisitorActivity />
           <p>© 2026 JohnMark Clarence Mendoza</p>
         </div>
       </footer>
