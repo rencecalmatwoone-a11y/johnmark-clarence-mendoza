@@ -1,0 +1,81 @@
+.site-cursor {
+  position: fixed;
+  top: -1.5px;
+  left: -1px;
+  z-index: 1000;
+  width: 22px;
+  height: 26px;
+  color: var(--accent);
+  pointer-events: none;
+  user-select: none;
+  visibility: hidden;
+}
+
+.site-cursor-arrow {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.14));
+  transform-origin: 1px 1.5px;
+  transition: transform 140ms ease;
+}
+
+.site-cursor-label {
+  position: absolute;
+  top: 22px;
+  left: 10px;
+  padding: 3px 8px 4px;
+  border: 1px solid color-mix(in oklch, var(--accent) 75%, var(--bg));
+  border-radius: 3px 7px 7px 7px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  box-shadow: 0 2px 7px rgb(0 0 0 / 0.12);
+  font: 500 11px/1.2 var(--mono);
+  letter-spacing: 0;
+  white-space: nowrap;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+
+.site-cursor[data-interactive="true"] .site-cursor-label {
+  background: var(--accent-deep);
+  color: #fff;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.site-cursor[data-pressed="true"] .site-cursor-arrow {
+  transform: scale(0.88);
+}
+
+.site-cursor[data-left="true"] .site-cursor-label {
+  left: auto;
+  right: 28px;
+  border-radius: 7px 3px 7px 7px;
+}
+
+.site-cursor[data-above="true"] .site-cursor-label {
+  top: auto;
+  bottom: 28px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-site-cursor,
+  html.has-site-cursor * {
+    cursor: none !important;
+  }
+
+  .site-cursor[data-visible="true"] {
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-cursor-arrow,
+  .site-cursor-label {
+    transition: none;
+  }
+}
+
+@media print {
+  .site-cursor {
+    display: none;
+  }
+}

@@ -156,8 +156,6 @@ html[data-theme="light"] {
   --ribbon-soft: oklch(70% 0.1 148 / 0.22);
   --ribbon-echo: oklch(48% 0.145 148 / 0.22);
   --toggle-bg: transparent;
---trail-primary: #2f8f49;
-  --trail-glow: #5ac66d;
   --aurora-1: #3f9c53;
   --aurora-2: #5ac66d;
   --aurora-x-1: 0px;
@@ -200,8 +198,6 @@ html[data-theme="dark"] {
   --ribbon-soft: oklch(82% 0.09 148 / 0.22);
   --ribbon-echo: oklch(70% 0.12 148 / 0.18);
 --toggle-bg: var(--raised);
---trail-primary: #f1b077;
-  --trail-glow: #ff9c4a;
 }
 
 @media (min-width: 64em) {
@@ -3523,22 +3519,6 @@ html[data-theme="dark"] .project {
   }
 }
 
-
-.mouse-trail {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 17;
-  opacity: 0.72;
-  mix-blend-mode: screen;
-}
-
-html[data-theme="light"] .mouse-trail {
-  mix-blend-mode: multiply;
-  opacity: 0.46;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .nav.is-open .menu,

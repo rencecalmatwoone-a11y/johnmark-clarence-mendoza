@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
 import HeroRole from './HeroRole'
 import VisitorActivity from './VisitorActivity'
 import GitHubActivity from './GitHubActivity'
+import SiteCursor from './SiteCursor'
 import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.png'
 import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
 import htmlIcon from './assets/html-5.png'
@@ -88,7 +89,7 @@ const services = [
 
 const skillFilters = [
   { label: 'All', names: null },
-  { label: 'Frontend', names: ['HTML', 'CSS', 'JavaScript', 'Tailwind', 'Bootstrap', 'ReactJS', 'TypeScript'] },
+  { label: 'Frontend', names: ['HTML', 'CSS', 'JavaScript', 'Tailwind', 'Bootstrap', 'ReactJS', 'Next.js', 'TypeScript'] },
   { label: 'Backend', names: ['PHP', 'JavaScript', 'TypeScript', 'Node.js', 'Supabase'] },
   { label: 'Design', names: ['Figma', 'Google Stitch'] },
   { label: 'Databases', names: ['MySQL', 'Supabase'] },
@@ -123,6 +124,13 @@ const skills = [
       <ellipse cx="16" cy="16" rx="11.5" ry="4.4" fill="none" stroke="#61DAFB" strokeWidth="1.6" transform="rotate(120 16 16)" />
     </svg>
   ) },
+  { name: 'Next.js', logo: null, svg: (
+    <svg viewBox="0 0 180 180" role="img" aria-hidden="true">
+      <circle cx="90" cy="90" r="90" fill="#000000" />
+      <path d="M149.508 157.52 69.142 54H54v71.97h12.114V69.384l73.885 95.46a90.45 90.45 0 0 0 9.509-7.324Z" fill="#ffffff" />
+      <path d="M115 54h12v72h-12z" fill="#ffffff" />
+    </svg>
+  ) },
   { name: 'TypeScript', logo: typescriptIcon },
   { name: 'Figma', logo: figmaIcon },
   { name: 'WordPress', logo: wordpressIcon },
@@ -153,7 +161,7 @@ function HeroStack({ category }) {
   const stack = category === 'Management'
     ? [{ name: 'Microsoft 365', logo: microsoftBadge }, { name: 'Google Workspace', logo: googleLogo }]
     : (category === 'Frontend'
-      ? ['ReactJS', 'TypeScript', 'Tailwind']
+      ? ['ReactJS', 'Next.js', 'TypeScript', 'Tailwind']
       : skillFilters.find((filter) => filter.label === category).names
     ).map((name) => skills.find((skill) => skill.name === name))
 
@@ -291,7 +299,6 @@ function App() {
   const [isHidden, setIsHidden] = useState(false)
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [activeSection, setActiveSection] = useState('')
-  const canvasRef = useRef(null)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -461,117 +468,6 @@ function App() {
 
     sections.forEach((section) => observer.observe(section))
     return () => observer.disconnect()
-  }, [isReady])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-
-    if (!canvas) return undefined
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return undefined
-
-    const points = []
-    const maxPoints = 36
-    const trailDuration = 520
-    let raf = 0
-
-    const size = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      canvas.width = Math.floor(window.innerWidth * dpr)
-      canvas.height = Math.floor(window.innerHeight * dpr)
-      canvas.style.width = `${window.innerWidth}px`
-      canvas.style.height = `${window.innerHeight}px`
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    }
-
-    const trailPalette = () => {
-      const styles = getComputedStyle(document.documentElement)
-      return {
-        primary: styles.getPropertyValue('--trail-primary').trim() || '#2f8f49',
-        glow: styles.getPropertyValue('--trail-glow').trim() || '#5ac66d',
-      }
-    }
-
-    const draw = (now) => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-      while (points.length && now - points[0].time > trailDuration) {
-        points.shift()
-      }
-
-      if (!points.length) {
-        raf = 0
-        return
-      }
-
-      const { primary, glow } = trailPalette()
-      ctx.lineCap = 'round'
-      ctx.lineJoin = 'round'
-      ctx.shadowBlur = 12
-      ctx.shadowColor = glow
-
-      for (let i = 1; i < points.length; i += 1) {
-        const prev = points[i - 1]
-        const point = points[i]
-        const midX = (prev.x + point.x) / 2
-        const midY = (prev.y + point.y) / 2
-        const age = now - point.time
-        const opacity = Math.max(0, 1 - age / trailDuration)
-        ctx.beginPath()
-        ctx.moveTo(prev.x, prev.y)
-        ctx.quadraticCurveTo(prev.x, prev.y, midX, midY)
-        ctx.strokeStyle = primary
-        ctx.globalAlpha = opacity * 0.62
-        ctx.lineWidth = 1.5 + opacity * 6.5
-        ctx.stroke()
-      }
-
-      ctx.shadowBlur = 0
-
-      const tip = points[points.length - 1]
-      if (tip) {
-        const opacity = Math.max(0, 1 - (now - tip.time) / trailDuration)
-        ctx.beginPath()
-        ctx.arc(tip.x, tip.y, 3.4, 0, Math.PI * 2)
-        ctx.fillStyle = primary
-        ctx.globalAlpha = opacity * 0.85
-        ctx.fill()
-      }
-
-      ctx.globalAlpha = 1
-      raf = window.requestAnimationFrame(draw)
-    }
-
-    const onPointerMove = (event) => {
-      const samples = event.getCoalescedEvents?.() || [event]
-      const now = performance.now()
-      const bounds = canvas.getBoundingClientRect()
-
-      samples.forEach((sample) => {
-        const x = sample.clientX - bounds.left
-        const y = sample.clientY - bounds.top
-        const previous = points[points.length - 1]
-        if (previous && Math.hypot(x - previous.x, y - previous.y) < 1) {
-          previous.time = now
-          return
-        }
-
-        points.push({ x, y, time: now })
-      })
-
-      if (points.length > maxPoints) points.splice(0, points.length - maxPoints)
-      if (!raf) raf = window.requestAnimationFrame(draw)
-    }
-
-    window.addEventListener('resize', size)
-    window.addEventListener('mousemove', onPointerMove, { passive: true })
-
-    size()
-    return () => {
-      window.cancelAnimationFrame(raf)
-      window.removeEventListener('resize', size)
-      window.removeEventListener('mousemove', onPointerMove)
-    }
   }, [isReady])
 
   const handleThemeToggle = () => {
@@ -1187,7 +1083,7 @@ function App() {
         </div>
       </footer>
 
-      <canvas className="mouse-trail" id="mouse-trail" aria-hidden="true" ref={canvasRef} />
+      <SiteCursor />
     </div>
   )
 }
