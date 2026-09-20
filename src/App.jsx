@@ -4,8 +4,8 @@ import LightRays from './LightRays'
 import HeroRole from './HeroRole'
 import VisitorActivity from './VisitorActivity'
 import GitHubActivity from './GitHubActivity'
-import portraitImageLight from './assets/ChatGPT Image Sep 1, 2026, 11_08_12 PM.png'
-import portraitImageDark from './assets/ChatGPT Image Sep 1, 2026, 11_05_21 PM.png'
+import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.png'
+import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
 import htmlIcon from './assets/html-5.png'
 import cssIcon from './assets/css-3.png'
 import jsIcon from './assets/js.png'
@@ -779,10 +779,10 @@ function App() {
             <div className="about-copy">
               <p className="about-label">Profile / 01</p>
               <p className="about-lead">
-                I am a Front-End Developer dedicated to crafting pixel-perfect, highly performant, and responsive web applications. With a strong foundation in modern JavaScript ecosystems—specializing in React, Next.js, and TypeScript—I bridge the gap between creative visual design and complex engineering.
+                I'm a Front-End Developer, working on responsive, user-friendly, visually appealing web applications. I understand and am experienced in modern JavaScript technologies like React, Next and TypeScript.
               </p>
               <p>
-                Building scalable web applications with React, Next.js, and TypeScript, emphasizing clean state management and performance optimization.
+                I also want to ensure that I get a balance between good design, clean and efficient code and ensure that websites run well across multiple devices.
               </p>
               <dl className="facts">
                 <div>
