@@ -345,6 +345,20 @@ body {
   transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Native text highlighting follows the active theme's green palette. */
+::selection {
+  background-color: var(--accent);
+  color: var(--ink-on-accent);
+  text-shadow: none;
+}
+
+@media (forced-colors: active) {
+  ::selection {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
 body.site-ready {
   opacity: 1;
   transform: none;
