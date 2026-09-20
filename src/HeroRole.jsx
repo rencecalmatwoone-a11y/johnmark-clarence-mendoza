@@ -1,10 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const roles = ['UI/UX Designer', 'Front-end Developer', 'Project Manager']
 const roleCycleMs = 8000
 
 export default function HeroRole() {
   const [activeRole, setActiveRole] = useState(0)
+  const selectionRef = useRef(null)
+  const dimensionsRef = useRef(null)
+
+  useEffect(() => {
+    const selection = selectionRef.current
+    const dimensions = dimensionsRef.current
+    const updateDimensions = () => {
+      const { width, height } = selection.getBoundingClientRect()
+      const label = `${Math.round(width)} × ${Math.round(height)}`
+      if (dimensions.textContent !== label) dimensions.textContent = label
+    }
+
+    updateDimensions()
+    const observer = new ResizeObserver(updateDimensions)
+    observer.observe(selection, { box: 'border-box' })
+    return () => observer.disconnect()
+  }, [activeRole])
 
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -41,11 +58,12 @@ export default function HeroRole() {
           <path d="m4 2 15 13-7 1-4 6L4 2Z" fill="#171717" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
         </svg>
       </span>
-      <span className="hero-role-selection" aria-hidden="true">
+      <span ref={selectionRef} className="hero-role-selection" aria-hidden="true">
         <span className="hero-role-handle" />
         <span className="hero-role-handle" />
         <span className="hero-role-handle" />
         <span className="hero-role-handle" />
+        <span ref={dimensionsRef} className="hero-role-dimensions" />
       </span>
     </h2>
   )

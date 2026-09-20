@@ -918,6 +918,28 @@ html[data-theme="dark"] .hero-rays {
   animation: rolePointerReveal var(--role-cycle) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
+.hero-role-dimensions {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+html[data-theme="dark"] .hero-role-dimensions {
+  background: #ff7a1a;
+}
+
 .hero-role-pointer {
   position: absolute;
   top: calc(100% + 0.18em);
@@ -1028,7 +1050,7 @@ html[data-theme="dark"] .hero-rays {
 
 .hero-copy > .lede {
   max-width: 42rem;
-  margin: clamp(1.75rem, 3vw, 2.5rem) auto 2rem;
+  margin: clamp(3rem, 4vw, 3.75rem) auto 2rem;
   font-size: clamp(1rem, 1.5vw, 1.1875rem);
   line-height: 1.85;
   text-wrap: pretty;
