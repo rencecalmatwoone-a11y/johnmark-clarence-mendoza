@@ -106,6 +106,10 @@ button.github-day:focus-visible { transform: scale(1.22); outline: 1px solid var
 .github-placeholder { min-height: 13rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; color: var(--muted); font: 0.8rem/1.6 var(--mono); text-align: center; }
 .github-placeholder--loading { background: linear-gradient(110deg, transparent 20%, var(--graphite) 50%, transparent 80%); background-size: 200% 100%; animation: github-loading 2s ease-in-out infinite; }
 .github-retry { border: 1px solid var(--rule-strong); border-radius: var(--radius); padding: 0.5rem 0.9rem; background: var(--raised); color: var(--accent); font: inherit; cursor: pointer; }
+.github-retry:disabled { opacity: 0.55; cursor: default; }
+.github-sync { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; color: var(--muted); font: 0.65rem/1.6 var(--mono); }
+.github-sync p { margin: 0 0 0.2rem; }
+.github-sync span { color: var(--faint); }
 @keyframes github-loading { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 
 @media (max-width: 48em) {

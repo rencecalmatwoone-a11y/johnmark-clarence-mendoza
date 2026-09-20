@@ -6,10 +6,17 @@ The section after Certifications displays the last year of real contributions fo
 `rencecalmatwoone-a11y`. It uses the public
 [GitHub Contributions API](https://github.com/grubersjoe/github-contributions-api),
 which caches results for one hour; no token or environment variable is needed.
+The calendar checks every minute while the tab is visible and online, and checks
+again on returning to the tab or reconnecting (with a 15-second request throttle).
+**Refresh now** requests fresh data using the service's documented `Cache-Control:
+no-cache` header, limited to once a minute. GitHub may still take time to record
+new contributions, so this is automatic polling, not instant push updates.
+The last successful calendar stays visible if a refresh fails. A last-checked
+timestamp describes the request time, not the age of the underlying GitHub data.
 Change `username` in `src/GitHubActivity.jsx` to use a different profile.
 The calendar follows the site's light/dark theme, scrolls horizontally on small
 screens, and supports arrow keys plus Home/End to explore individual days.
-If the service is unavailable, it shows a retry button and a GitHub profile link
+If the service is unavailable, it shows a refresh button and a GitHub profile link
 instead of fabricated contributions.
 
 ## Visitor activity
