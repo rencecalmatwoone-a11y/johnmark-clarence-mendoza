@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { useInteractionSounds } from './useInteractionSounds'
 import './ContactChat.css'
 
 export default function ContactChat({ portrait }) {
+  const { playMessage } = useInteractionSounds()
   const chatRef = useRef(null)
   const [stage, setStage] = useState(0)
 
@@ -9,9 +11,12 @@ export default function ContactChat({ portrait }) {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     const timers = []
     let visible = false
+    let stopMessage
     const clearTimers = () => {
       timers.forEach(window.clearTimeout)
       timers.length = 0
+      stopMessage?.()
+      stopMessage = undefined
     }
     function reveal() {
       clearTimers()
@@ -19,7 +24,7 @@ export default function ContactChat({ portrait }) {
         setStage(4)
         return
       }
-      if (!visible) return
+      if (!visible || document.hidden) return
       // Keep the email available while someone is using the link.
       if (chatRef.current?.contains(document.activeElement)) {
         setStage(4)
@@ -28,9 +33,17 @@ export default function ContactChat({ portrait }) {
       }
       setStage(0)
       timers.push(window.setTimeout(() => setStage(1), 350))
-      timers.push(window.setTimeout(() => setStage(2), 1350))
+      timers.push(window.setTimeout(() => {
+        if (!visible || document.hidden) return
+        setStage(2)
+        stopMessage = playMessage()
+      }, 1350))
       timers.push(window.setTimeout(() => setStage(3), 2100))
-      timers.push(window.setTimeout(() => setStage(4), 3700))
+      timers.push(window.setTimeout(() => {
+        if (!visible || document.hidden) return
+        setStage(4)
+        stopMessage = playMessage()
+      }, 3700))
       timers.push(window.setTimeout(exitConversation, 7700))
     }
     function exitConversation() {
@@ -50,13 +63,19 @@ export default function ContactChat({ portrait }) {
     observer.observe(chatRef.current)
 
     const handleMotionChange = () => reveal()
+    const handleVisibilityChange = () => {
+      if (document.hidden) clearTimers()
+      else if (visible) reveal()
+    }
     motion.addEventListener('change', handleMotionChange)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     return () => {
       observer.disconnect()
       clearTimers()
       motion.removeEventListener('change', handleMotionChange)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [])
+  }, [playMessage])
 
   return (
     <div className="contact-chat" ref={chatRef}>

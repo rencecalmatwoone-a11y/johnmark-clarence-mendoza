@@ -26,6 +26,36 @@ export function createInteractionAudio() {
   function play(kind, value = 0, position = 0) {
     if (!enabled || !context || context.state !== 'running' || document.hidden) return
     const time = context.currentTime
+    if (kind === 'message') {
+      // A locally synthesized, iMessage-style ascending bell chime.
+      // Message arrivals are independent of the hover/swipe rate limit.
+      const notes = [1567.98, 2093, 2637.02]
+      const activeGains = []
+      notes.forEach((frequency, index) => {
+        const start = time + index * 0.085
+        const end = start + 0.32
+        const gain = context.createGain()
+        activeGains.push(gain)
+        gain.gain.setValueAtTime(0, start)
+        gain.gain.linearRampToValueAtTime(0.055, start + 0.005)
+        gain.gain.exponentialRampToValueAtTime(0.0001, end)
+        gain.gain.setValueAtTime(0, end + 0.01)
+        gain.connect(output)
+
+        const source = context.createOscillator()
+        source.type = 'sine'
+        source.frequency.setValueAtTime(frequency, start)
+        source.connect(gain)
+        source.onended = () => {
+          source.disconnect()
+          gain.disconnect()
+        }
+        source.start(start)
+        source.stop(end + 0.02)
+      })
+      // Let the card silence a chime immediately when it leaves the viewport.
+      return () => activeGains.forEach((gain) => gain.disconnect())
+    }
     if (time - lastPlayed < (kind === 'swipe' ? 0.12 : 0.055)) return
     lastPlayed = time
 
@@ -77,6 +107,7 @@ export function createInteractionAudio() {
     }
     source.start(time)
     source.stop(time + duration + 0.02)
+    return () => gain.disconnect()
   }
 
   return {

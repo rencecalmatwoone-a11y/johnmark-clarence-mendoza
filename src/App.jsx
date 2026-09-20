@@ -6,8 +6,8 @@ import VisitorActivity from './VisitorActivity'
 import GitHubActivity from './GitHubActivity'
 import SiteCursor from './SiteCursor'
 import ContactChat from './ContactChat'
-import { SoundToggle } from './InteractionSounds'
 import { useInteractionSounds } from './useInteractionSounds'
+import useVisibleSound from './useVisibleSound'
 import useCardSwipe from './useCardSwipe'
 import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.png'
 import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
@@ -287,8 +287,9 @@ function App() {
   const visibleSkills = skills.filter((skill) => !selectedSkillFilter.names || selectedSkillFilter.names.includes(skill.name))
   const [activeCert, setActiveCert] = useState(0)
   const { playSwipe } = useInteractionSounds()
+  const { ref: certSoundRef, play: playVisibleSwipe } = useVisibleSound(playSwipe)
   const moveCert = (direction) => {
-    playSwipe(direction)
+    playVisibleSwipe(direction)
     setActiveCert((current) => (current + direction + certifications.length) % certifications.length)
   }
   const certSwipe = useCardSwipe(moveCert)
@@ -913,7 +914,7 @@ function App() {
               <p>Professional credentials that reinforce my approach to product design, systems thinking, and delivery.</p>
             </header>
 
-            <div className="cert-carousel" role="region" aria-roledescription="carousel" aria-label="Certifications">
+            <div className="cert-carousel" ref={certSoundRef} role="region" aria-roledescription="carousel" aria-label="Certifications">
             <div className="cert-stack" {...certSwipe}>
               {certifications.map((cert, index) => {
                 const offset = (index - activeCert + certifications.length) % certifications.length
@@ -951,7 +952,7 @@ function App() {
               <p aria-live="polite" aria-atomic="true"><span className="cert-count">{activeCert + 1} / {certifications.length}</span><span className="cert-current-title">{certifications[activeCert].title}</span></p>
               <button type="button" onClick={() => moveCert(1)} aria-label="Next certification">→</button>
             </div>
-            <div className="cert-interaction-tools"><p>Swipe or drag to explore</p><SoundToggle /></div>
+            <div className="cert-interaction-tools"><p>Swipe or drag to explore</p></div>
             </div>
           </div>
         </section>
