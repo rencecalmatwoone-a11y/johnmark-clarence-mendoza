@@ -1,5 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import './GitHubActivity.css'
+import { SoundToggle } from './InteractionSounds'
+import { useInteractionSounds } from './useInteractionSounds'
 
 const username = 'rencecalmatwoone-a11y'
 const profileUrl = `https://github.com/${username}`
@@ -9,6 +11,7 @@ const parseDate = (date) => new Date(`${date}T00:00:00Z`)
 const describeDay = (day) => `${day.count.toLocaleString()} contribution${day.count === 1 ? '' : 's'} on ${dayFormat.format(parseDate(day.date))}`
 
 const CalendarGrid = memo(function CalendarGrid({ days, onSelect }) {
+  const { playHover } = useInteractionSounds()
   const [focused, setFocused] = useState(days.length - 1)
   const scrollRef = useRef(null)
   const buttonsRef = useRef([])
@@ -68,10 +71,10 @@ const CalendarGrid = memo(function CalendarGrid({ days, onSelect }) {
                 tabIndex={focused === index ? 0 : -1}
                 aria-label={labels[index]}
                 title={labels[index]}
-                onMouseEnter={() => onSelect(day)}
-                onFocus={() => { setFocused(index); onSelect(day) }}
+                onMouseEnter={() => { onSelect(day); playHover(day.level, index / Math.max(1, days.length - 1) * 2 - 1) }}
+                onFocus={() => { setFocused(index); onSelect(day); playHover(day.level) }}
                 onBlur={() => onSelect(null)}
-                onClick={() => onSelect(day)}
+                onClick={() => { onSelect(day); playHover(day.level) }}
                 onKeyDown={(event) => navigate(event, index)}
               />
             ))}
@@ -191,7 +194,7 @@ const GitHubActivity = memo(function GitHubActivity() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.95 0-1.1.39-1.99 1.03-2.7-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.37.2 2.39.1 2.64.64.71 1.03 1.6 1.03 2.7 0 3.85-2.34 4.7-4.57 4.94.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A10 10 0 0 0 12 2Z" /></svg>
               <span>@{username}</span><span aria-hidden="true">↗</span>
             </a>
-            <span className="github-period">Last 12 months</span>
+            <div className="github-panel-tools"><span className="github-period">Last 12 months</span><SoundToggle /></div>
           </div>
           {activity ? <Calendar days={activity.days} /> : (
             <div className={`github-placeholder github-placeholder--${status}`}>

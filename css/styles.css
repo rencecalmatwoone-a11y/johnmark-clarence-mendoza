@@ -2062,6 +2062,7 @@ html[data-theme="dark"] .cert-carousel {
 }
 
 .cert-stack {
+  touch-action: pan-y pinch-zoom;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
@@ -2083,6 +2084,7 @@ html[data-theme="dark"] .cert-carousel {
   transition: filter 0.35s var(--ease);
 }
 .cert-slide--active {
+  transform: translateX(var(--swipe-x, 0px)) rotate(var(--swipe-rotation, 0deg));
   z-index: 3;
   box-shadow: var(--cert-shadow);
 }
@@ -2090,6 +2092,8 @@ html[data-theme="dark"] .cert-carousel {
   z-index: 2;
   transform: translate(-43%, 2.5rem) rotate(-12deg) scale(0.9);
 }
+.cert-stack[data-dragging] { cursor: grabbing; user-select: none; }
+.cert-stack[data-dragging] .cert-slide--active { transition: none; }
 .cert-slide--next {
   z-index: 2;
   transform: translate(43%, 2.5rem) rotate(12deg) scale(0.9);
@@ -2158,6 +2162,7 @@ html[data-theme="dark"] .cert-carousel {
 @media (prefers-reduced-motion: reduce) {
   .cert-slide,
   .cert-slide-content { transition: none; }
+  .cert-slide--active { transform: none; }
 }
 
 .cert-item {
@@ -3346,14 +3351,17 @@ html[data-theme="dark"] .project {
   .block-head,
   .profile-column,
   .service-card,
-  .project
+  .project,
+  .cert-carousel,
+  .contact-chat,
+  .contact-item
 ) {
   opacity: 0;
   transform: translateY(1rem);
   filter: blur(2px);
 }
 
-.block.reveal:not(.is-inview) :is(.about-copy, .skill-card, .edu-card, .cert-item) {
+.block.reveal:not(.is-inview) :is(.about-copy, .skill-card, .edu-card) {
   --reveal-opacity: 0;
   --reveal-filter: 2px;
   transition-delay: 0s;
@@ -3363,12 +3371,15 @@ html[data-theme="dark"] .project {
   .block-head,
   .profile-column,
   .service-card,
-  .project
+  .project,
+  .cert-carousel,
+  .contact-chat,
+  .contact-item
 ) {
   animation: revealContent 1.15s var(--ease) backwards;
 }
 
-.block.reveal.is-inview :is(.about-copy, .skill-card, .edu-card, .cert-item) {
+.block.reveal.is-inview :is(.about-copy, .skill-card, .edu-card) {
   --reveal-opacity: 1;
   --reveal-filter: 0px;
 }
@@ -3382,16 +3393,16 @@ html[data-theme="dark"] .project {
   transition-delay: 0s;
 }
 
-.block.reveal.is-inview :is(.profile-column, .service-card:nth-child(1), .skill-card:nth-child(1), .project, .cert-item:nth-child(1)) {
+.block.reveal.is-inview :is(.profile-column, .service-card:nth-child(1), .skill-card:nth-child(1), .project, .cert-carousel, .contact-chat) {
   animation-delay: 0.2s;
 }
 
-.block.reveal.is-inview :is(.about-copy, .service-card:nth-child(2), .skill-card:nth-child(2), .cert-item:nth-child(2)) {
+.block.reveal.is-inview :is(.about-copy, .service-card:nth-child(2), .skill-card:nth-child(2)) {
   transition-delay: 0.34s, 0.34s, 0s, 0s, 0s, 0s;
   animation-delay: 0.34s;
 }
 
-.block.reveal.is-inview :is(.service-card:nth-child(3), .skill-card:nth-child(3), .cert-item:nth-child(3)) {
+.block.reveal.is-inview :is(.service-card:nth-child(3), .skill-card:nth-child(3)) {
   animation-delay: 0.48s;
 }
 
@@ -3403,8 +3414,20 @@ html[data-theme="dark"] .project {
 #services .service-card:nth-child(3) { animation-delay: 0.22s; }
 
 
-.block.reveal.is-inview .cert-item:nth-child(4) {
+.block.reveal.is-inview .contact-item:nth-child(1) {
+  animation-delay: 0.34s;
+}
+
+.block.reveal.is-inview .contact-item:nth-child(2) {
+  animation-delay: 0.48s;
+}
+
+.block.reveal.is-inview .contact-item:nth-child(3) {
   animation-delay: 0.62s;
+}
+
+.block.reveal.is-inview .contact-item:nth-child(4) {
+  animation-delay: 0.76s;
 }
 
 .block.reveal.is-inview .skill-card:nth-child(4) {
@@ -3545,7 +3568,7 @@ html[data-theme="dark"] .project {
     transition: none;
   }
 
-.block.reveal :is(
+  .block.reveal:is(.is-inview, :not(.is-inview)) :is(
     .block-head,
     .profile-column,
     .about-copy,
@@ -3554,12 +3577,15 @@ html[data-theme="dark"] .project {
     .skill-card,
     .project,
     .cert-item,
+    .cert-carousel,
+    .contact-chat,
     .contact-item
   ) {
     opacity: 1;
     transform: none;
     filter: none;
     animation: none;
+    transition: none;
     --reveal-opacity: 1;
     --reveal-filter: 0px;
   }

@@ -5,6 +5,10 @@ import HeroRole from './HeroRole'
 import VisitorActivity from './VisitorActivity'
 import GitHubActivity from './GitHubActivity'
 import SiteCursor from './SiteCursor'
+import ContactChat from './ContactChat'
+import { SoundToggle } from './InteractionSounds'
+import { useInteractionSounds } from './useInteractionSounds'
+import useCardSwipe from './useCardSwipe'
 import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.png'
 import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
 import htmlIcon from './assets/html-5.png'
@@ -282,7 +286,12 @@ function App() {
   const selectedSkillFilter = skillFilters.find((filter) => filter.label === activeSkillFilter)
   const visibleSkills = skills.filter((skill) => !selectedSkillFilter.names || selectedSkillFilter.names.includes(skill.name))
   const [activeCert, setActiveCert] = useState(0)
-  const moveCert = (direction) => setActiveCert((current) => (current + direction + certifications.length) % certifications.length)
+  const { playSwipe } = useInteractionSounds()
+  const moveCert = (direction) => {
+    playSwipe(direction)
+    setActiveCert((current) => (current + direction + certifications.length) % certifications.length)
+  }
+  const certSwipe = useCardSwipe(moveCert)
   const [theme, setTheme] = useState(() => {
     try {
       const stored = window.localStorage.getItem('theme')
@@ -905,14 +914,14 @@ function App() {
             </header>
 
             <div className="cert-carousel" role="region" aria-roledescription="carousel" aria-label="Certifications">
-            <div className="cert-stack">
+            <div className="cert-stack" {...certSwipe}>
               {certifications.map((cert, index) => {
                 const offset = (index - activeCert + certifications.length) % certifications.length
                 const position = offset === 0 ? 'active' : offset === 1 ? 'next' : offset === certifications.length - 1 ? 'previous' : 'hidden'
                 return (
                 <div className={`cert-slide cert-slide--${position}`} key={cert.title} aria-hidden={position === 'hidden'} inert={position === 'hidden' ? true : undefined}>
                 {position !== 'active' && position !== 'hidden' && (
-                  <button className="cert-select" type="button" aria-label={`Show ${cert.title}`} onClick={() => setActiveCert(index)} />
+                  <button className="cert-select" type="button" aria-label={`Show ${cert.title}`} onClick={() => moveCert(position === 'next' ? 1 : -1)} />
                 )}
                 <div className="cert-slide-content" inert={position !== 'active' ? true : undefined}>
                 <article className={`cert-item ${cert.featured ? 'featured' : ''}`} key={cert.title}>
@@ -942,6 +951,7 @@ function App() {
               <p aria-live="polite" aria-atomic="true"><span className="cert-count">{activeCert + 1} / {certifications.length}</span><span className="cert-current-title">{certifications[activeCert].title}</span></p>
               <button type="button" onClick={() => moveCert(1)} aria-label="Next certification">→</button>
             </div>
+            <div className="cert-interaction-tools"><p>Swipe or drag to explore</p><SoundToggle /></div>
             </div>
           </div>
         </section>
@@ -949,11 +959,17 @@ function App() {
 
       <section className="block reveal" id="contact">
           <div className="wrap">
-            <header className="block-head">
-              <p className="section-kicker">Contact</p>
-              <h2>Let&apos;s get in touch</h2>
-              <p>Open to opportunities, collaborations, and interesting projects — reach out through any of the channels below.</p>
-            </header>
+            <div className="contact-intro">
+              <header className="block-head contact-heading">
+                <p className="section-kicker">Contact</p>
+                <h2 aria-label="Let's design, create, and build incredible work together.">
+                  <span aria-hidden="true">Let&apos;s <em className="contact-rotating-word">
+                    <span>design</span><span>Create</span><span>Build</span>
+                  </em><br />incredible work<br />together.</span>
+                </h2>
+              </header>
+              <ContactChat portrait={theme === 'dark' ? portraitImageDark : portraitImageLight} />
+            </div>
 
             <div className="contact-cards">
               <a className="contact-item" href="https://mail.google.com/mail/?view=cm&to=rencecalmatwo.one%40gmail.com" target="_blank" rel="noopener noreferrer">

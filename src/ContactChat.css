@@ -1,0 +1,191 @@
+.contact-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  margin-bottom: 2.5rem;
+}
+
+#contact .contact-heading {
+  margin: 0;
+}
+
+#contact .contact-heading h2 {
+  font-size: clamp(3.1rem, 6.2vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-transform: none;
+}
+
+.contact-heading h2 em {
+  color: var(--accent);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+
+.contact-rotating-word {
+  display: inline-grid;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.15;
+  margin-block: -0.085em;
+  padding-inline: 0.04em;
+}
+
+.contact-rotating-word > span {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+
+.contact-rotating-word > span:first-child { opacity: 1; }
+
+#contact.is-inview .contact-rotating-word > span {
+  animation: contact-word-rise 9s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+
+#contact.is-inview .contact-rotating-word > span:nth-child(2) { animation-delay: 3s; }
+#contact.is-inview .contact-rotating-word > span:nth-child(3) { animation-delay: 6s; }
+
+@keyframes contact-word-rise {
+  0% { opacity: 0; transform: translateY(35%); }
+  8.333%, 33.333% { opacity: 1; transform: translateY(0); }
+  41.667%, 100% { opacity: 0; transform: translateY(-35%); }
+}
+
+.contact-chat {
+  min-width: 0;
+  padding: clamp(1.15rem, 2.5vw, 2rem);
+  background: var(--raised);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-align: left;
+}
+
+.contact-chat h3 {
+  margin: 0 0 1.5rem;
+  color: var(--text);
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.contact-chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 10rem;
+}
+
+.contact-chat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.contact-chat-avatar {
+  flex: 0 0 2.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--bg-deep);
+  object-fit: cover;
+}
+
+.contact-chat-bubble {
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0 1rem 1rem;
+  background: var(--bg-deep);
+  color: var(--body);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.contact-chat-reply,
+.contact-chat-greeting {
+  animation: contact-message-in 0.35s var(--ease) both;
+}
+
+.contact-chat-messages.is-exiting {
+  animation: contact-messages-out 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.contact-chat-email {
+  background: color-mix(in srgb, var(--accent) 8%, var(--raised));
+  animation: contact-message-in 0.35s var(--ease) both;
+}
+
+.contact-chat-email > span {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.contact-chat-email a {
+  color: var(--accent);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.contact-chat-email a:hover {
+  text-decoration-color: currentColor;
+}
+
+.contact-chat-email a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.contact-chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 2.5rem;
+}
+
+.contact-chat-typing span {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: contact-typing 1s ease-in-out infinite;
+}
+
+.contact-chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.contact-chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes contact-typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+@keyframes contact-message-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes contact-messages-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+@media (max-width: 760px) {
+  .contact-intro { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+  #contact .contact-heading h2 { font-size: clamp(3rem, 11vw, 5rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-chat-messages.is-exiting,
+  .contact-chat-reply,
+  .contact-chat-greeting,
+  .contact-chat-email,
+  .contact-chat-typing span { animation: none; }
+
+  #contact.is-inview .contact-rotating-word > span { animation: none; }
+}
