@@ -90,7 +90,7 @@ export default function VisitorActivity() {
         onClick={() => setOpen((value) => !value)}
       >
         {recent.length > 0 && <span className="visitor-avatar-stack" aria-hidden="true">
-          {recent.map((visitor) => <Avatar key={visitor.id} index={visitor.avatar} />)}
+          {recent.slice(0, 5).map((visitor) => <Avatar key={visitor.id} index={visitor.avatar} />)}
         </span>}
         <span className="visitor-count">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">

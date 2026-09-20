@@ -4,7 +4,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{1
 export function validateStats(data) {
   if (!data || !Number.isSafeInteger(data.views) || data.views < 0 ||
       !Number.isSafeInteger(data.visitors) || data.visitors < 0 || data.visitors > data.views ||
-      !Array.isArray(data.recent) || data.recent.length > 4) {
+      !Array.isArray(data.recent) || data.recent.length > 5) {
     throw new Error('Invalid visitor statistics')
   }
   const ids = new Set()
@@ -104,10 +104,11 @@ export function getVisitorTracker() {
   return tracker
 }
 
-// Keep the four displayed portraits distinct, even if visitors share a preferred image.
+// Cycle through all available portraits before reusing an image.
 export function assignAvatars(visitors) {
   const used = new Set()
   return visitors.map((visitor) => {
+    if (used.size === 4) used.clear()
     let avatar = visitor.avatar
     while (used.has(avatar)) avatar = (avatar + 1) % 4
     used.add(avatar)

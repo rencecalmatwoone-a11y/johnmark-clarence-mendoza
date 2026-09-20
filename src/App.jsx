@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
 import HeroRole from './HeroRole'
 import VisitorActivity from './VisitorActivity'
+import GitHubActivity from './GitHubActivity'
 import portraitImageLight from './assets/ChatGPT Image Sep 1, 2026, 11_08_12 PM.png'
 import portraitImageDark from './assets/ChatGPT Image Sep 1, 2026, 11_05_21 PM.png'
 import htmlIcon from './assets/html-5.png'
@@ -696,7 +697,8 @@ function App() {
           <div className="hero-rays" aria-hidden="true">
             <LightRays
               raysOrigin="top-center"
-              raysColor="#34a439"
+              raysColor={theme === 'dark' ? '#4cdb55' : '#34a439'}
+              lightMode={theme === 'light'}
               raysSpeed={1.2}
               lightSpread={0.9}
               rayLength={5}
@@ -706,7 +708,7 @@ function App() {
               distortion={0}
               className="custom-rays"
               pulsating={false}
-              fadeDistance={1}
+              fadeDistance={1.5}
               saturation={1}
             />
           </div>
@@ -749,7 +751,7 @@ function App() {
                     <span>UI/UX &amp; Front-end</span>
                   </div>
                 </div>
-                <figcaption>Cavite · Student</figcaption>
+                <figcaption>Tagaytay, Cavite · Student</figcaption>
               </figure>
               <div className="profile-social" aria-label="Social links">
                 <a className="social-github" href="https://github.com/rencecalmatwoone-a11y" rel="noopener noreferrer" aria-label="GitHub">
@@ -1047,6 +1049,8 @@ function App() {
             </div>
           </div>
         </section>
+        <GitHubActivity />
+
       <section className="block reveal" id="contact">
           <div className="wrap">
             <header className="block-head">

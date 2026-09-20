@@ -1,5 +1,17 @@
 # React + Vite
 
+## GitHub activity
+
+The section after Certifications displays the last year of real contributions for
+`rencecalmatwoone-a11y`. It uses the public
+[GitHub Contributions API](https://github.com/grubersjoe/github-contributions-api),
+which caches results for one hour; no token or environment variable is needed.
+Change `username` in `src/GitHubActivity.jsx` to use a different profile.
+The calendar follows the site's light/dark theme, scrolls horizontally on small
+screens, and supports arrow keys plus Home/End to explore individual days.
+If the service is unavailable, it shows a retry button and a GitHub profile link
+instead of fabricated contributions.
+
 ## Visitor activity
 
 The hero includes a view counter and a clickable strip showing the four most recent

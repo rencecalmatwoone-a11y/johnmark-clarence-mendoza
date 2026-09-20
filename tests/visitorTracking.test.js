@@ -89,3 +89,9 @@ test('four recent visitors always have different portraits', () => {
   assert.equal(new Set(assigned.map((visitor) => visitor.avatar)).size, 4)
   assert.deepEqual(visitors.map((visitor) => visitor.avatar), [1, 1, 1, 1])
 })
+
+test('five recent visitors are accepted and reuse portraits safely', () => {
+  const recent = Array.from({ length: 5 }, (_, i) => ({ ...stats.recent[0], id: String(i), avatar: 1 }))
+  assert.equal(validateStats({ views: 6, visitors: 6, recent }).recent.length, 5)
+  assert.deepEqual(assignAvatars(recent).map((visitor) => visitor.avatar), [1, 2, 3, 0, 1])
+})

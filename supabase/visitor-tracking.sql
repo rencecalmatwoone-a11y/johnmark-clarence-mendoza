@@ -32,7 +32,7 @@ alter table visitor_analytics.totals enable row level security;
 revoke all on all tables in schema visitor_analytics from public, anon, authenticated;
 revoke all on all sequences in schema visitor_analytics from public, anon, authenticated;
 
--- Definer access is limited to the aggregate and the last four anonymous aliases.
+-- Definer access is limited to the aggregate and the last five anonymous aliases.
 create or replace function public.get_portfolio_visitors()
 returns jsonb
 language sql
@@ -51,7 +51,7 @@ as $$
       ) order by recent.last_seen desc, recent.public_id desc)
       from (
         select public_id, last_seen from visitor_analytics.visitors
-        order by last_seen desc, public_id desc limit 4
+        order by last_seen desc, public_id desc limit 5
       ) recent
     ), '[]'::jsonb)
   )
