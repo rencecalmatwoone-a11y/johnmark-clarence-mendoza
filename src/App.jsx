@@ -438,7 +438,7 @@ function App() {
   }, [navOpen])
 
   useEffect(() => {
-    const sections = document.querySelectorAll('main .block')
+    const sections = document.querySelectorAll('main .block.reveal')
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
     if (!sections.length || reduceMotion.matches) {

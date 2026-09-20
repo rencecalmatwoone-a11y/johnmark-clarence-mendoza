@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import './GitHubActivity.css'
 
 const username = 'rencecalmatwoone-a11y'
@@ -8,23 +8,25 @@ const dayFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric'
 const parseDate = (date) => new Date(`${date}T00:00:00Z`)
 const describeDay = (day) => `${day.count.toLocaleString()} contribution${day.count === 1 ? '' : 's'} on ${dayFormat.format(parseDate(day.date))}`
 
-function Calendar({ days }) {
-  const [selected, setSelected] = useState(null)
+const CalendarGrid = memo(function CalendarGrid({ days, onSelect }) {
   const [focused, setFocused] = useState(days.length - 1)
   const scrollRef = useRef(null)
   const buttonsRef = useRef([])
   const offset = parseDate(days[0].date).getUTCDay()
   const weeks = Math.ceil((offset + days.length) / 7)
-  const months = []
-
-  days.forEach((day, index) => {
-    const date = parseDate(day.date)
-    const week = Math.floor((index + offset) / 7)
-    if ((index === 0 || date.getUTCDate() === 1) && week < weeks - 1) {
-      if (months.length && week - months[months.length - 1].week < 3) months.pop()
-      months.push({ week, label: monthFormat.format(date) })
-    }
-  })
+  const { months, labels } = useMemo(() => {
+    const months = []
+    const labels = days.map((day, index) => {
+      const date = parseDate(day.date)
+      const week = Math.floor((index + offset) / 7)
+      if ((index === 0 || date.getUTCDate() === 1) && week < weeks - 1) {
+        if (months.length && week - months[months.length - 1].week < 3) months.pop()
+        months.push({ week, label: monthFormat.format(date) })
+      }
+      return describeDay(day)
+    })
+    return { months, labels }
+  }, [days, offset, weeks])
 
   useEffect(() => {
     const scroll = scrollRef.current
@@ -48,14 +50,13 @@ function Calendar({ days }) {
   }
 
   return (
-    <>
       <div className="github-calendar-scroll" ref={scrollRef}>
         <div className="github-calendar" style={{ '--weeks': weeks }} role="group" aria-label="Daily GitHub contributions. Use arrow keys to explore days, Home for the first day, and End for the last day.">
           <div className="github-months" aria-hidden="true">
             {months.map((month) => <span key={month.week} style={{ gridColumn: month.week + 1 }}>{month.label}</span>)}
           </div>
           <div className="github-weekdays" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
-          <div className="github-days" onMouseLeave={() => setSelected(null)}>
+          <div className="github-days" onMouseLeave={() => onSelect(null)}>
             {days.map((day, index) => (
               <button
                 key={day.date}
@@ -65,18 +66,27 @@ function Calendar({ days }) {
                 type="button"
                 style={{ gridColumn: Math.floor((index + offset) / 7) + 1, gridRow: (index + offset) % 7 + 1 }}
                 tabIndex={focused === index ? 0 : -1}
-                aria-label={describeDay(day)}
-                title={describeDay(day)}
-                onMouseEnter={() => setSelected(day)}
-                onFocus={() => { setFocused(index); setSelected(day) }}
-                onBlur={() => setSelected(null)}
-                onClick={() => setSelected(day)}
+                aria-label={labels[index]}
+                title={labels[index]}
+                onMouseEnter={() => onSelect(day)}
+                onFocus={() => { setFocused(index); onSelect(day) }}
+                onBlur={() => onSelect(null)}
+                onClick={() => onSelect(day)}
                 onKeyDown={(event) => navigate(event, index)}
               />
             ))}
           </div>
         </div>
       </div>
+  )
+})
+
+function Calendar({ days }) {
+  const [selected, setSelected] = useState(null)
+
+  return (
+    <>
+      <CalendarGrid days={days} onSelect={setSelected} />
       <div className="github-calendar-detail">
         <span>{selected ? describeDay(selected) : `${dayFormat.format(parseDate(days[0].date))} – ${dayFormat.format(parseDate(days[days.length - 1].date))}`}</span>
         <span className="github-scroll-hint">Swipe to explore</span>
@@ -85,7 +95,7 @@ function Calendar({ days }) {
   )
 }
 
-export default function GitHubActivity() {
+const GitHubActivity = memo(function GitHubActivity() {
   const [activity, setActivity] = useState(null)
   const [status, setStatus] = useState('loading')
   const [attempt, setAttempt] = useState(0)
@@ -120,7 +130,7 @@ export default function GitHubActivity() {
   }, [attempt])
 
   return (
-    <section className="block reveal github-block" id="github-activity" aria-labelledby="github-heading">
+    <section className="block github-block" id="github-activity" aria-labelledby="github-heading">
       <div className="wrap">
         <header className="block-head">
           <p className="section-kicker">Behind the builds</p>
@@ -153,4 +163,6 @@ export default function GitHubActivity() {
       </div>
     </section>
   )
-}
+})
+
+export default GitHubActivity

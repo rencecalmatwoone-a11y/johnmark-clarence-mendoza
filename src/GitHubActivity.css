@@ -1,3 +1,11 @@
+#github-activity {
+  /* Keep the dense calendar out of the global section blur/compositing effects. */
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
 .github-panel {
   --activity-0: color-mix(in oklab, var(--graphite) 60%, var(--graphite-2));
   --activity-1: color-mix(in oklab, var(--accent) 25%, var(--activity-0));
