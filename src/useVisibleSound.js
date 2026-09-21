@@ -11,9 +11,9 @@ export default function useVisibleSound(sound) {
       stopSound.current = null
     }
     const observer = new IntersectionObserver((entries) => {
-      visible.current = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.5)
+      visible.current = entries.some((entry) => entry.isIntersecting)
       if (!visible.current) stop()
-    }, { threshold: 0.5 })
+    }, { threshold: 0 })
     observer.observe(ref.current)
     const handleVisibility = () => {
       if (document.hidden) stop()

@@ -9,12 +9,12 @@ export function InteractionSoundsProvider({ children }) {
   useEffect(() => {
     const unlock = () => audio.unlock()
     const visibility = () => document.hidden ? audio.silence() : audio.restore()
-    document.addEventListener('pointerdown', unlock, { passive: true })
-    document.addEventListener('keydown', unlock)
+    // Touch browsers may authorize audio only when the gesture ends.
+    const activationEvents = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']
+    activationEvents.forEach((event) => document.addEventListener(event, unlock, { capture: true, passive: true }))
     document.addEventListener('visibilitychange', visibility)
     return () => {
-      document.removeEventListener('pointerdown', unlock)
-      document.removeEventListener('keydown', unlock)
+      activationEvents.forEach((event) => document.removeEventListener(event, unlock, true))
       document.removeEventListener('visibilitychange', visibility)
       audio.dispose()
     }

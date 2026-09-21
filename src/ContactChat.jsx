@@ -56,10 +56,10 @@ export default function ContactChat({ portrait }) {
       timers.push(window.setTimeout(reveal, 650))
     }
     const observer = new IntersectionObserver((entries) => {
-      visible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.5)
+      visible = entries.some((entry) => entry.isIntersecting)
       if (visible) reveal()
       else clearTimers()
-    }, { threshold: 0.5 })
+    }, { threshold: 0 })
     observer.observe(chatRef.current)
 
     const handleMotionChange = () => reveal()

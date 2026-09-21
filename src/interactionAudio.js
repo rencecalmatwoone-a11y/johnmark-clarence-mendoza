@@ -17,14 +17,28 @@ export function createInteractionAudio() {
         output.gain.value = 0.65
         output.connect(context.destination)
       }
-      if (context.state === 'suspended') void context.resume().catch(() => {})
+      if (context.state === 'suspended' || context.state === 'interrupted') void context.resume().catch(() => {})
     } catch {
       // Sound is optional when the browser or device cannot provide audio.
     }
   }
 
   function play(kind, value = 0, position = 0) {
-    if (!enabled || !context || context.state !== 'running' || document.hidden) return
+    if (!enabled || !context || context.state === 'closed' || document.hidden) return
+    if (context.state !== 'running') {
+      // Preserve the first tap's effect while mobile audio finishes resuming.
+      // Never replay old interactions after a long interruption.
+      const pendingContext = context
+      const requestedAt = performance.now()
+      let cancelled = false
+      let stop
+      void context.resume().then(() => {
+        if (!cancelled && context === pendingContext && context.state === 'running' && performance.now() - requestedAt < 250) {
+          stop = play(kind, value, position)
+        }
+      }).catch(() => {})
+      return () => { cancelled = true; stop?.() }
+    }
     const time = context.currentTime
     if (kind === 'message') {
       // A locally synthesized, iMessage-style ascending bell chime.
