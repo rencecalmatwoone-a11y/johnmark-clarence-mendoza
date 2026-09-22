@@ -8,7 +8,10 @@ export default function HeroPeek({ kind, portrait }) {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef(null)
   const dialogRef = useRef(null)
+  const closeTimerRef = useRef(null)
   const id = useId()
+
+  useEffect(() => () => window.clearTimeout(closeTimerRef.current), [])
 
   const positionCard = () => {
     const dialog = dialogRef.current
@@ -49,7 +52,26 @@ export default function HeroPeek({ kind, portrait }) {
     setOpen(true)
   }
 
-  const close = () => dialogRef.current.close()
+  const finishClose = () => {
+    window.clearTimeout(closeTimerRef.current)
+    dialogRef.current?.close()
+  }
+
+  const close = () => {
+    const dialog = dialogRef.current
+    if (!dialog.open || dialog.dataset.closing === 'true') return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishClose()
+      return
+    }
+    // Continue from the current frame, even when dismissed during entrance.
+    const style = window.getComputedStyle(dialog)
+    dialog.style.setProperty('--peek-exit-opacity', style.opacity)
+    dialog.style.setProperty('--peek-exit-transform', style.transform)
+    dialog.style.setProperty('--peek-backdrop-opacity', window.getComputedStyle(dialog, '::backdrop').opacity)
+    dialog.dataset.closing = 'true'
+    closeTimerRef.current = window.setTimeout(finishClose, 320)
+  }
 
   return (
     <>
@@ -72,6 +94,13 @@ export default function HeroPeek({ kind, portrait }) {
           className="hero-peek"
           aria-label={isLocation ? 'The Philippines' : 'Rence’s profile photo'}
           tabIndex={-1}
+          onCancel={(event) => {
+            event.preventDefault()
+            close()
+          }}
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget && event.animationName === 'heroPeekExit') finishClose()
+          }}
           onKeyDown={(event) => {
             if (event.key === 'Tab') {
               event.preventDefault()
@@ -79,6 +108,8 @@ export default function HeroPeek({ kind, portrait }) {
             }
           }}
           onClose={() => {
+            window.clearTimeout(closeTimerRef.current)
+            delete dialogRef.current.dataset.closing
             setOpen(false)
             triggerRef.current?.focus({ preventScroll: true })
           }}
