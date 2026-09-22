@@ -1,0 +1,117 @@
+.hero-peek-trigger {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.hero-peek-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+  border-radius: 3px;
+}
+
+.hero-peek-trigger[aria-expanded="true"] {
+  color: var(--accent);
+}
+
+.hero-peek {
+  position: fixed;
+  inset: auto;
+  width: min(clamp(112px, 28vw, 144px), calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  margin: 0;
+  padding: 5px;
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--rule));
+  border-radius: 14px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--raised) 88%, transparent);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 22%), 0 3px 10px rgb(0 0 0 / 10%), inset 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  font-family: var(--sans);
+  text-align: left;
+}
+
+.hero-peek[open] {
+  animation: heroPeekEnter 300ms var(--ease) both;
+}
+
+.hero-peek::backdrop {
+  background: color-mix(in srgb, var(--bg) 24%, transparent);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.hero-peek:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.hero-peek-portrait,
+.hero-peek-map {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: 9px;
+  background: var(--graphite);
+}
+
+.hero-peek-portrait { object-fit: cover; object-position: center 35%; }
+
+.hero-peek-map {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 20%, var(--bg)), var(--graphite));
+}
+
+.hero-peek-map-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at center, #000, transparent 75%);
+}
+
+.hero-peek-map-silhouette {
+  position: absolute;
+  inset: 7px 12px;
+  background: linear-gradient(145deg, var(--accent-pale), var(--accent));
+  mask: var(--map-image) center / contain no-repeat;
+  -webkit-mask: var(--map-image) center / contain no-repeat;
+}
+
+.hero-peek-map::before {
+  content: '';
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(28px);
+  opacity: 0.12;
+}
+
+.hero-peek[open] .hero-peek-map::before {
+  animation: heroMapGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes heroPeekEnter {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes heroMapGlow {
+  from { opacity: 0.1; transform: scale(0.85); }
+  to { opacity: 0.25; transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-peek[open],
+  .hero-peek[open] .hero-peek-map::before { animation: none; }
+}

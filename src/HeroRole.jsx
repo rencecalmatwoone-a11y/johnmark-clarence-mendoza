@@ -41,7 +41,7 @@ export default function HeroRole() {
   }, [])
 
   return (
-    <h2
+    <span
       key={activeRole}
       className="hero-role"
       style={{ '--role-characters': roles[activeRole].length, '--role-cycle': `${roleCycleMs}ms` }}
@@ -65,6 +65,6 @@ export default function HeroRole() {
         <span className="hero-role-handle" />
         <span ref={dimensionsRef} className="hero-role-dimensions" />
       </span>
-    </h2>
+    </span>
   )
 }

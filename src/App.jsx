@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
 import HeroRole from './HeroRole'
+import HeroPeek from './HeroPeek'
 import VisitorActivity from './VisitorActivity'
 import GitHubActivity from './GitHubActivity'
 import SiteCursor from './SiteCursor'
@@ -615,12 +616,12 @@ function App() {
             />
           </div>
           <div className="wrap hero-copy">
-            <p className="eyebrow">Hello, I am</p>
+            <p className="eyebrow">Hello, World!</p>
             <h1>
-              <span>JohnMark Clarence Calma</span>
-              <span>Mendoza</span>
+              I'm <HeroPeek kind="profile" portrait={theme === 'dark' ? portraitImageDark : portraitImageLight} />, A 23-year-old <HeroRole />
+              <br />
+              based in <HeroPeek kind="location" />
             </h1>
-            <HeroRole />
             <p className="lede">
               I&apos;m a UI/UX Designer <HeroStack category="Design" />, Front-End Developer <HeroStack category="Frontend" />, and Project Manager <HeroStack category="Management" />{' '}
               focused on creating intuitive digital experiences and turning ideas into polished, functional products.
