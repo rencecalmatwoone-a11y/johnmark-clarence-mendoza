@@ -635,7 +635,7 @@ function App() {
             />
           </div>
           <div className="wrap hero-copy">
-            <p className="eyebrow">Hello, World!</p>
+            <p className="eyebrow">Hello, There!</p>
             <h1>
               I'm <HeroPeek kind="profile" portrait={theme === 'dark' ? profileImageDark : profileImageLight} />, A 23-year-old <HeroRole />
               <br />
