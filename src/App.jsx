@@ -35,6 +35,7 @@ import vscodeIcon from './assets/vscode.svg'
 import stitchIcon from './assets/google-stitch.png'
 import figmaIcon from './assets/figma.svg'
 import supabaseIcon from './assets/supabase.svg'
+import bootstrapIcon from './assets/bootstrap.svg'
 
 const navItems = [
   { label: 'About me', href: '#about' },
@@ -113,12 +114,7 @@ const skills = [
       />
     </svg>
   ) },
-  { name: 'Bootstrap', logo: null, svg: (
-    <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
-      <rect width="32" height="32" rx="6" fill="#7952B3" />
-      <path fill="#fff" d="M9.2 9.4h7.3c1.4 0 2.5.3 3.3.9.8.6 1.2 1.5 1.2 2.6 0 .8-.2 1.4-.6 1.9-.4.5-1 .8-1.7 1 .9.2 1.6.6 2.1 1.2.5.6.7 1.3.7 2.2 0 1.2-.4 2.2-1.3 2.9-.8.7-2 1.1-3.6 1.1H9.2V9.4zm3.3 5.4h3.4c.6 0 1.1-.1 1.4-.4.3-.3.5-.6.5-1.1 0-.5-.2-.9-.5-1.1-.3-.3-.8-.4-1.4-.4h-3.4v3zm0 6.1h3.9c.7 0 1.2-.2 1.6-.5.4-.3.6-.8.6-1.4 0-.6-.2-1-.6-1.3-.4-.3-.9-.5-1.6-.5h-3.9v3.7z" />
-    </svg>
-  ) },
+  { name: 'Bootstrap', logo: bootstrapIcon },
   { name: 'PHP', logo: phpIcon },
   { name: 'ReactJS', logo: null, svg: (
     <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
