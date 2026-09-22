@@ -14,6 +14,7 @@ import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.pn
 import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
 import facepalmImageLight from './assets/facepalm/Facepalm_White.png'
 import facepalmImageDark from './assets/facepalm/Facepalm_Black.png'
+import facepalmAudioClip from './assets/Sound/nights-first-10-seconds.wav'
 import htmlIcon from './assets/html-5.png'
 import cssIcon from './assets/css-3.png'
 import jsIcon from './assets/js.png'
@@ -302,6 +303,7 @@ function App() {
     }
   })
   const darkModeActivationCount = useRef(0)
+  const facepalmAudioRef = useRef(null)
   const [facepalmUnlocked, setFacepalmUnlocked] = useState(false)
   const profileImageLight = facepalmUnlocked ? facepalmImageLight : portraitImageLight
   const profileImageDark = facepalmUnlocked ? facepalmImageDark : portraitImageDark
@@ -484,15 +486,18 @@ function App() {
   }, [isReady])
 
   const handleThemeToggle = () => {
+    // Count light-to-dark switches; returning to light does not count.
+    const enteringDarkMode = document.documentElement.dataset.theme === 'light'
+    if (enteringDarkMode) darkModeActivationCount.current += 1
+    const unlockFacepalm = enteringDarkMode && darkModeActivationCount.current === 3
+    if (unlockFacepalm && facepalmAudioRef.current) {
+      // Start within the click gesture so browsers allow audio playback.
+      facepalmAudioRef.current.currentTime = 0
+      void facepalmAudioRef.current.play().catch(() => {})
+    }
     const apply = () =>
       flushSync(() => {
-        // Count light-to-dark switches; returning to light does not count.
-        if (document.documentElement.dataset.theme === 'light') {
-          darkModeActivationCount.current += 1
-          if (darkModeActivationCount.current === 3) {
-            setFacepalmUnlocked(true)
-          }
-        }
+        if (unlockFacepalm) setFacepalmUnlocked(true)
         setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
       })
 
@@ -542,6 +547,7 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
+      <audio ref={facepalmAudioRef} src={facepalmAudioClip} preload="auto" />
       <div className={`preloader ${isHidden ? 'is-hidden' : ''}`} aria-live="polite" aria-busy="true">
         <div className="loader" aria-hidden="true" />
         <div className="preloader-text">LOADING</div>
