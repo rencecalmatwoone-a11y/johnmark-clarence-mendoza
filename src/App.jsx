@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import LightRays from './LightRays'
 import HeroRole from './HeroRole'
@@ -12,6 +12,8 @@ import useVisibleSound from './useVisibleSound'
 import useCardSwipe from './useCardSwipe'
 import portraitImageLight from './assets/4D5D0585-DFC6-4EC7-BCDB-D0E89B846AA9.png'
 import portraitImageDark from './assets/BEBB1230-213E-4394-995C-D9CC1F9F41D8.png'
+import facepalmImageLight from './assets/facepalm/Facepalm_White.png'
+import facepalmImageDark from './assets/facepalm/Facepalm_Black.png'
 import htmlIcon from './assets/html-5.png'
 import cssIcon from './assets/css-3.png'
 import jsIcon from './assets/js.png'
@@ -299,6 +301,10 @@ function App() {
       return 'light'
     }
   })
+  const darkModeActivationCount = useRef(0)
+  const [facepalmUnlocked, setFacepalmUnlocked] = useState(false)
+  const profileImageLight = facepalmUnlocked ? facepalmImageLight : portraitImageLight
+  const profileImageDark = facepalmUnlocked ? facepalmImageDark : portraitImageDark
   const [isReady, setIsReady] = useState(false)
   const [navOpen, setNavOpen] = useState(false)
   const [navClosing, setNavClosing] = useState(false)
@@ -310,7 +316,7 @@ function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     const favicon = document.querySelector('link[rel="icon"]')
-    favicon?.setAttribute('href', theme === 'dark' ? portraitImageDark : portraitImageLight)
+    favicon?.setAttribute('href', theme === 'dark' ? profileImageDark : profileImageLight)
     try {
       localStorage.setItem('theme', theme)
     } catch {
@@ -318,7 +324,7 @@ function App() {
     }
     const themeToggle = document.querySelector('#theme-toggle')
     themeToggle?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode')
-  }, [theme])
+  }, [theme, profileImageDark, profileImageLight])
 
   useEffect(() => {
     const interactiveSurfaces = document.querySelectorAll('.hero-cta, .header-cta, .skill-card, .profile-card, .about-copy, .edu-card, .cert-item')
@@ -479,9 +485,16 @@ function App() {
 
   const handleThemeToggle = () => {
     const apply = () =>
-      flushSync(() =>
+      flushSync(() => {
+        // Count light-to-dark switches; returning to light does not count.
+        if (document.documentElement.dataset.theme === 'light') {
+          darkModeActivationCount.current += 1
+          if (darkModeActivationCount.current === 3) {
+            setFacepalmUnlocked(true)
+          }
+        }
         setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
-      )
+      })
 
     if (document.startViewTransition) {
       document.startViewTransition(apply)
@@ -618,7 +631,7 @@ function App() {
           <div className="wrap hero-copy">
             <p className="eyebrow">Hello, World!</p>
             <h1>
-              I'm <HeroPeek kind="profile" portrait={theme === 'dark' ? portraitImageDark : portraitImageLight} />, A 23-year-old <HeroRole />
+              I'm <HeroPeek kind="profile" portrait={theme === 'dark' ? profileImageDark : profileImageLight} />, A 23-year-old <HeroRole />
               <br />
               based in <HeroPeek kind="location" />
             </h1>
@@ -646,8 +659,8 @@ function App() {
               <figure className="portrait profile-card">
                 <div className="profile-card-glow" aria-hidden="true" />
                 <div className="portrait-frame">
-                  <img className="portrait-image portrait-image-light" src={portraitImageLight} alt="Portrait" />
-                  <img className="portrait-image portrait-image-dark" src={portraitImageDark} alt="" aria-hidden="true" />
+                  <img className="portrait-image portrait-image-light" src={profileImageLight} alt="Portrait" />
+                  <img className="portrait-image portrait-image-dark" src={profileImageDark} alt="" aria-hidden="true" />
                   <span className="portrait-rule" />
                   <div className="profile-card-details">
                     <strong>JohnMark Clarence Mendoza</strong>
