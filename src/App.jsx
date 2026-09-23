@@ -33,6 +33,7 @@ import hackerrankLogo from './assets/hackerrank-logo.svg'
 import googleLogo from './assets/google-logo.svg'
 import projectShot from './assets/Screenshot 2026-08-31 181008.png'
 import musyncShot from './assets/musync.png'
+import ratioFlowShot from './assets/RatioFlowimg.png'
 import nodejsIcon from './assets/nodejs.svg'
 import gitIcon from './assets/git.svg'
 import vscodeIcon from './assets/vscode.svg'
@@ -869,7 +870,6 @@ function App() {
                     >
                       Live preview
                     </a>
-                    <span className="project-scan" aria-hidden="true" />
                   </div>
                 </div>
                 <div className="project-body">
@@ -890,6 +890,43 @@ function App() {
                 <span className="project-corner project-corner-br" aria-hidden="true" />
                 <div className="project-preview">
                   <div className="project-shot">
+                    <img
+                      className="project-image-contain"
+                      src={ratioFlowShot}
+                      alt="RatioFlow image aspect ratio converter"
+                      loading="lazy"
+                    />
+                    <a
+                      className="project-preview-link"
+                      href="https://ratioflow-umber.vercel.app/"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label="Open live preview for RatioFlow"
+                    >
+                      Live preview
+                    </a>
+                  </div>
+                </div>
+                <div className="project-body">
+                  <h3>RatioFlow</h3>
+                  <p>
+                    RatioFlow is a privacy-first image aspect ratio converter built for fast, seamless resizing. Adjust images to different aspect ratios in real time, preview changes instantly, and export the result—all directly in your browser without uploading your files to a server.
+                  </p>
+                </div>
+                <ul className="project-stack">
+                  <li>Next.js</li>
+                  <li>TypeScript</li>
+                  <li>Tailwind CSS</li>
+                  <li>Canvas API</li>
+                </ul>
+              </article>
+              <article className="project">
+                <span className="project-corner project-corner-tl" aria-hidden="true" />
+                <span className="project-corner project-corner-tr" aria-hidden="true" />
+                <span className="project-corner project-corner-bl" aria-hidden="true" />
+                <span className="project-corner project-corner-br" aria-hidden="true" />
+                <div className="project-preview">
+                  <div className="project-shot">
                     <img className="project-image-contain" src={musyncShot} alt="Musync song guessing game with music filters, playback controls, and score tracking" loading="lazy" />
                     <a
                       className="project-preview-link"
@@ -900,7 +937,6 @@ function App() {
                     >
                       Live preview
                     </a>
-                    <span className="project-scan" aria-hidden="true" />
                   </div>
                 </div>
                 <div className="project-body">
